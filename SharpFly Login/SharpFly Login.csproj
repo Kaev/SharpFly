@@ -71,7 +71,6 @@
     <Compile Include="Server\LoginServer.cs" />
     <Compile Include="Utility\Config.cs" />
     <Compile Include="Utility\IniFile.cs" />
-    <Compile Include="Utility\Pool.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
