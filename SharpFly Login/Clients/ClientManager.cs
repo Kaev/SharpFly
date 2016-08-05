@@ -56,8 +56,11 @@ namespace SharpFly_Login.Clients
 
         public void RemoveUser(Client client)
         {
-            if (m_Clients.Contains(client))
-                m_Clients.Remove(client);
+            lock(m_ListLock)
+            {
+                if (m_Clients.Contains(client))
+                    m_Clients.Remove(client);
+            }
         }
 
     }

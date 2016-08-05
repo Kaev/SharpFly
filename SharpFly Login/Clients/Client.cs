@@ -9,9 +9,6 @@ using System.Collections.Generic;
 
 namespace SharpFly_Login.Clients
 {
-
-    delegate void ProcessData(SocketAsyncEventArgs e);
-
     class Client : IDisposable
     {
 
@@ -73,19 +70,15 @@ namespace SharpFly_Login.Clients
         {
             try
             {
-
-                // Receive, test
+                if (this.Socket != null)
                 {
-                    if (this.Socket != null)
-                    {
-                        if (this.Socket.Available <= 0)
-                            return;
+                    if (this.Socket.Available <= 0)
+                        return;
 
-                        int byteCount = this.Socket.Receive(this.Buffer, this.Buffer.Length, SocketFlags.None);
-                        if (byteCount <= 0)
-                            return;
-                        ReceivedBytes.AddRange(this.Buffer);
-                    }
+                    int byteCount = this.Socket.Receive(this.Buffer, this.Buffer.Length, SocketFlags.None);
+                    if (byteCount <= 0)
+                        return;
+                    ReceivedBytes.AddRange(this.Buffer);
                 }
 
                 byte[] data = ReceivedBytes.ToArray();
@@ -154,7 +147,8 @@ namespace SharpFly_Login.Clients
                 if (buildDate != Config.ClientBuildDate)
                 {
                     this.SendLoginFail(LoginError.ERROR_RESOURCE_FALSIFIED);
-                    this.Socket.Disconnect(false);
+                    this.Dispose();
+                    return;
                 }
 
                 this.Username = packet.ReadString();
