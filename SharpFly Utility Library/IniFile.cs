@@ -1,9 +1,8 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SharpFly_Login.Utility
+namespace SharpFly_Utility_Library
 {
     class IniFile
     {

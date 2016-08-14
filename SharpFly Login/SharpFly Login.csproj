@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,18 +61,14 @@
   <ItemGroup>
     <Compile Include="Clients\Client.cs" />
     <Compile Include="Clients\ClientManager.cs" />
+    <Compile Include="Clusters\Cluster.cs" />
+    <Compile Include="Clusters\ClusterManager.cs" />
     <Compile Include="Database\MysqlConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Database\PreparedStatements.cs" />
-    <Compile Include="Security\Crc32.cs" />
-    <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Security\MD5.cs" />
     <Compile Include="Security\Rijndael.cs" />
-    <Compile Include="Packets\OutgoingPacket.cs" />
-    <Compile Include="Packets\PacketBase.cs" />
     <Compile Include="Server\LoginServer.cs" />
-    <Compile Include="Utility\Config.cs" />
-    <Compile Include="Utility\IniFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -81,7 +79,19 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Packets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpFly Packet Library\SharpFly Packet Library.csproj">
+      <Project>{9f95e6cd-856e-4a20-9c6b-f0764d0be513}</Project>
+      <Name>SharpFly Packet Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpFly Utility Library\SharpFly Utility Library.csproj">
+      <Project>{c362c08b-de5f-4e35-86e2-17cb64cc53f7}</Project>
+      <Name>SharpFly Utility Library</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

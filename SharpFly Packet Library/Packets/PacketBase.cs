@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SharpFly_Login.Packets
+namespace SharpFly_Packet_Library.Packets
 {
     public abstract class PacketBase
     {

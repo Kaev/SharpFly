@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace SharpFly_Login.Security
+namespace SharpFly_Packet_Library.Security
 {
 
     // Copied from OsaFlyFF-Source

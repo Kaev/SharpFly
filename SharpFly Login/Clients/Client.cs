@@ -1,49 +1,18 @@
 ﻿using System;
 using System.Net.Sockets;
-using SharpFly_Login.Packets;
-using SharpFly_Login.Database;
-using SharpFly_Login.Utility;
-using SharpFly_Login.Server;
 using System.Data;
 using System.Collections.Generic;
+using SharpFly_Login.Database;
+using SharpFly_Login.Server;
+using SharpFly_Packet_Library.Packets;
+using SharpFly_Packet_Library.Packets.LoginServer.Incoming;
+using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
+using SharpFly_Utility_Library;
 
 namespace SharpFly_Login.Clients
 {
     class Client : IDisposable
     {
-
-        #region Packet headers
-        public enum IncomingPacketHeader
-        {
-            PING = 0x14,
-            RELOG_REQUEST = 0x16,
-            LOGIN_REQUEST = 0xFC,
-            SOCK_FIN = 0xFF
-        }
-
-        public enum OutgoingPacketHeader
-        {
-            SESSION_KEY = 0x00,
-            PING = 0x0B,
-            SERVER_LIST = 0xFD,
-            LOGIN_MESSAGE = 0xFE
-        }
-
-        public enum LoginError
-        {
-            ERROR_SERVICE_DOWN = 0x6D,
-            ERROR_ACCOUNT_CONNECTED = 0x67,
-            ERROR_ACCOUNT_BANNED = 0x77,
-            ERROR_INVALID_PASSWORD = 0x78,
-            ERROR_INVALID_USERNAME = 0x79,
-            ERROR_VERIFICATION_REQUIRED = 0x7A,
-            ERROR_ACCOUNT_MAINTENANCE = 0x85,
-            ERROR_SERVER_ERROR = 0x88,
-            ERROR_RESOURCE_FALSIFIED = 0x8A
-        }
-        #endregion
-
-        private int m_PasswordSize = 42;
         private byte[] m_RemainingBytes = null;
 
         public byte[] Buffer { get; set; }
@@ -102,17 +71,17 @@ namespace SharpFly_Login.Clients
                     else
                     {
                         packet.Position = 13; // Go to headers
-                        uint header = (uint)packet.ReadInt();
+                        uint header = packet.ReadUInt();
                         switch (header)
                         {
-                            case (uint)IncomingPacketHeader.LOGIN_REQUEST:
+                            case SharpFly_Packet_Library.Packets.LoginServer.Incoming.OpCodes.LOGIN_REQUEST:
                                 LoginRequest(packet);
                                 break;
-                            case (uint)IncomingPacketHeader.PING:
+                            case SharpFly_Packet_Library.Packets.LoginServer.Incoming.OpCodes.PING:
                                 break;
-                            case (uint)IncomingPacketHeader.SOCK_FIN:
+                            case SharpFly_Packet_Library.Packets.LoginServer.Incoming.OpCodes.SOCK_FIN:
                                 break;
-                            case (uint)IncomingPacketHeader.RELOG_REQUEST:
+                            case SharpFly_Packet_Library.Packets.LoginServer.Incoming.OpCodes.RELOG_REQUEST:
                                 RelogRequest(packet);
                                 break;
                             default:
@@ -142,19 +111,16 @@ namespace SharpFly_Login.Clients
         {   // aka CDPCertified::SendCertify()
             try
             {
-                string buildDate = packet.ReadString();
-
-                if (buildDate != Config.ClientBuildDate)
+                LoginRequest request = new LoginRequest(packet);
+                if (request.BuildDate != Config.ClientBuildDate)
                 {
                     this.SendLoginFail(LoginError.ERROR_RESOURCE_FALSIFIED);
                     this.Dispose();
                     return;
                 }
 
-                this.Username = packet.ReadString();
-
+                this.Username = request.Username;
                 DataTable dt = PreparedStatements.GETACCOUNTINFORMATIONS.Process(this.Username);
-
                 if (dt.Rows.Count == 0)
                 {
                     this.SendLoginFail(LoginError.ERROR_INVALID_USERNAME);
@@ -162,9 +128,7 @@ namespace SharpFly_Login.Clients
                     return;
                 }
 
-                byte[] passwordBytes = packet.ReadBytes(16 * m_PasswordSize);
-                string password = Security.Rijndael.decrypt(passwordBytes).TrimEnd('\0');
-
+                string password = Security.Rijndael.decrypt(request.Password).TrimEnd('\0');
                 if ((string)dt.Rows[0]["Password"] != password)
                 {
                     this.SendLoginFail(LoginError.ERROR_INVALID_PASSWORD);
@@ -204,35 +168,25 @@ namespace SharpFly_Login.Clients
 
         public void RelogRequest(IncomingPacket packet)
         {
-            string username = packet.ReadString();
-            string password = packet.ReadString();
-            password = Security.MD5.ComputeString(String.Format("{0}{1}", Config.Md5Salt, password));
-            if (username == this.Username && password == this.Password)
-            {
-                //TODO: kick from world
-            }
+            RelogRequest request = new RelogRequest(packet);
+            string password = Security.MD5.ComputeString(String.Format("{0}{1}", Config.Md5Salt, request.Password));
+            // check and kick from world
         }
         #endregion
         #region Outgoing packets
-        public void SendLoginFail(LoginError errorCode)
+        public void SendLoginFail(uint errorCode)
         {
-            OutgoingPacket packet = new OutgoingPacket(OutgoingPacketHeader.LOGIN_MESSAGE);
-            packet.Write((int)errorCode);
-            packet.Send(this);
+            new LoginFail(errorCode, this.Socket);
         }
 
         public void SendServerList()
         {
-            Console.Write("");
-            OutgoingPacket packet = new OutgoingPacket(OutgoingPacketHeader.SERVER_LIST);
-
+            new ServerList(this.Socket);
         }
 
         public void SendSessionKey()
         {
-            OutgoingPacket packet = new OutgoingPacket(OutgoingPacketHeader.SESSION_KEY);
-            packet.Write((int)SessionKey);
-            packet.Send(this);
+            new SessionKey((int)this.SessionKey, this.Socket);
         }
         #endregion
     }

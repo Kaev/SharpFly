@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpFly_Login.Utility
+namespace SharpFly_Utility_Library
 {
     public static class Config
     {
