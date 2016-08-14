@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Net.Sockets;
 using System;
-using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
 
 namespace SharpFly_Packet_Library.Packets
 {

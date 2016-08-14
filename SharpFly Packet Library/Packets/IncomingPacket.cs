@@ -19,7 +19,7 @@ namespace SharpFly_Packet_Library.Packets
             }
         }
 
-        public int ReceivedSize { get; set; }
+        public int ReceivedSize { get; private set; }
 
         public IncomingPacket()
         {
@@ -78,14 +78,14 @@ namespace SharpFly_Packet_Library.Packets
             int calculatedDataHash = ~(BitConverter.ToInt32(crc.ComputeHash(data), 0) ^ sessionKey);
 
             long oldPosition = this.Position;
-            Position = 0;
+            this.Position = 0;
             if (ReadByte() != 0x5E)
                 return false;
 
             int lengthHash = ReadInt();
-            Position += 4;
+            this.Position += 4;
             int dataHash = ReadInt();
-            Position = oldPosition;
+            this.Position = oldPosition;
             return dataHash == calculatedDataHash && lengthHash == calculatedLengthHash;
         }
 
@@ -114,12 +114,12 @@ namespace SharpFly_Packet_Library.Packets
             return m_Reader.ReadInt32();
         }
 
-        public short ReadInt16()
+        public short ReadShort()
         {
             return m_Reader.ReadInt16();
         }
 
-        public long ReadInt64()
+        public long ReadLong()
         {
             return m_Reader.ReadInt64();
         }
