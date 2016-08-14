@@ -79,9 +79,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Packets\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\SharpFly Packet Library\SharpFly Packet Library.csproj">
       <Project>{9f95e6cd-856e-4a20-9c6b-f0764d0be513}</Project>

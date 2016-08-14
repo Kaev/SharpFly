@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SharpFly_Utility_Library;
+using System;
 using System.Data;
-using SharpFly_Login.Utility;
 
 namespace SharpFly_Login.Database
 {
