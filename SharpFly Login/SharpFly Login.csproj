@@ -44,8 +44,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,8 +63,6 @@
     <Compile Include="Clients\ClientManager.cs" />
     <Compile Include="Clusters\Cluster.cs" />
     <Compile Include="Clusters\ClusterManager.cs" />
-    <Compile Include="Database\MysqlConnector.cs" />
-    <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Database\PreparedStatements.cs" />
     <Compile Include="Security\MD5.cs" />
     <Compile Include="Security\Rijndael.cs" />

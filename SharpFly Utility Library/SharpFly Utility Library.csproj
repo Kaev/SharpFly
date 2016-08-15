@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,9 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="IniFile.cs" />
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\LoginServerConfig.cs" />
+    <Compile Include="Configuration\WorldServerConfig.cs" />
+    <Compile Include="Database\Databases\Database.cs" />
+    <Compile Include="Database\Databases\LoginDatabase.cs" />
+    <Compile Include="Database\Databases\Tables\LoginDatabase\Accounts.cs" />
+    <Compile Include="Database\Databases\WorldDatabase.cs" />
+    <Compile Include="Database\MySQLConnector.cs" />
+    <Compile Include="Database\PreparedStatement.cs" />
+    <Compile Include="Configuration\IniFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\Databases\Tables\WorldDatabase\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

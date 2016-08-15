@@ -7,7 +7,6 @@ using SharpFly_Login.Server;
 using SharpFly_Packet_Library.Packets;
 using SharpFly_Packet_Library.Packets.LoginServer.Incoming;
 using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
-using SharpFly_Utility_Library;
 
 namespace SharpFly_Login.Clients
 {
@@ -112,7 +111,7 @@ namespace SharpFly_Login.Clients
             try
             {
                 LoginRequest request = new LoginRequest(packet);
-                if (request.BuildDate != Config.ClientBuildDate)
+                if (request.BuildDate != (string)LoginServer.Config.GetSetting("ClientBuildDate"))
                 {
                     this.SendLoginFail(LoginError.ERROR_RESOURCE_FALSIFIED);
                     this.Dispose();
@@ -120,7 +119,7 @@ namespace SharpFly_Login.Clients
                 }
 
                 this.Username = request.Username;
-                DataTable dt = PreparedStatements.GETACCOUNTINFORMATIONS.Process(this.Username);
+                DataTable dt = PreparedStatements.GET_ACCOUNT_INFORMATIONS.Process(this.Username);
                 if (dt.Rows.Count == 0)
                 {
                     this.SendLoginFail(LoginError.ERROR_INVALID_USERNAME);
@@ -169,7 +168,7 @@ namespace SharpFly_Login.Clients
         public void RelogRequest(IncomingPacket packet)
         {
             RelogRequest request = new RelogRequest(packet);
-            string password = Security.MD5.ComputeString(String.Format("{0}{1}", Config.Md5Salt, request.Password));
+            string password = Security.MD5.ComputeString(String.Format("{0}{1}", LoginServer.Config.GetSetting("Md5Salt"), request.Password));
             // check and kick from world
         }
         #endregion

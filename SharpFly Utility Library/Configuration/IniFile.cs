@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SharpFly_Utility_Library
+namespace SharpFly_Utility_Library.Configuration
 {
     class IniFile
     {

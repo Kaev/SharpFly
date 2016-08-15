@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Net.Sockets;
 using SharpFly_Login.Clients;
-using SharpFly_Login.Database;
 using System.Net;
 using System.Threading;
-using SharpFly_Utility_Library;
+using SharpFly_Utility_Library.Database.Databases;
+using SharpFly_Utility_Library.Configuration;
+using SharpFly_Utility_Library.Database;
 
 namespace SharpFly_Login.Server
 {
     class LoginServer
     {
-        public bool ConfigLoaded { get; private set; }
         public int Port { get; private set; }
-        public Socket Socket { get; private set; }
+        private Socket Socket { get; set; }
 
+        public static Config Config { get; private set; }
         public static ClientManager ClientManager;
+        public static LoginDatabase LoginDatabase;
 
         public LoginServer(int Port)
         {
-            ConfigLoaded = false;
-            if (Config.ReadConfig() && MySQL.CheckConnection()) // Read config file and check Mysql connection
+            Config = new LoginServerConfig("Resources/Config/Login.ini");
+            LoginDatabase = new LoginDatabase(Config);
+            if (LoginDatabase.Connection.CheckConnection())
             {
-                this.ConfigLoaded = true;
                 Security.Rijndael.Initiate();
                 this.Port = Port;
                 this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

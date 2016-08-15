@@ -1,10 +1,8 @@
-﻿using System;
-using MySql.Data.MySqlClient;
-using System.Diagnostics.Contracts;
-using System.Collections.Generic;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
 
-namespace SharpFly_Login.Database
+namespace SharpFly_Utility_Library.Database
 {
     public class PreparedStatement
     {
@@ -12,11 +10,11 @@ namespace SharpFly_Login.Database
 
         public string Query { get; private set; }
 
-        public PreparedStatement(string query, params MySqlParameter[] parameters)
+        public PreparedStatement(Databases.Database database, string query, params MySqlParameter[] parameters)
         {
             Query = query;
-            m_Command = new MySqlCommand(Query, MySQL.Connection);
-            
+            m_Command = new MySqlCommand(Query, database.Connection.Connection);
+
             m_Command.Parameters.AddRange(parameters);
             m_Command.Prepare();
         }
@@ -38,7 +36,7 @@ namespace SharpFly_Login.Database
                     return retVal;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return null;
