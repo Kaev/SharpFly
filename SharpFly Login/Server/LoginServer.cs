@@ -5,16 +5,18 @@ using System.Net;
 using System.Threading;
 using SharpFly_Utility_Library.Database.Databases;
 using SharpFly_Utility_Library.Configuration;
+using SharpFly_Login.Clusters;
 
 namespace SharpFly_Login.Server
 {
     class LoginServer
     {
-        private int m_Port { get; set; }
-        private Socket m_Socket { get; set; }
+        private Socket m_ClientSocket { get; set; }
+        private Socket m_ClusterSocket { get; set; }
 
         public static Config Config { get; private set; }
         public static ClientManager ClientManager;
+        public static ClusterManager ClusterManager;
         public static LoginDatabase LoginDatabase;
 
         public LoginServer(int Port)
@@ -24,26 +26,39 @@ namespace SharpFly_Login.Server
             if (LoginDatabase.Connection.CheckConnection())
             {
                 Security.Rijndael.Initiate();
-                this.m_Port = Port;
-                this.m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this.m_Socket.Bind(new IPEndPoint(IPAddress.Any, this.m_Port));
-                this.m_Socket.Listen(100);
+                this.m_ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                this.m_ClientSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
+                this.m_ClientSocket.Listen(100);
+
+                this.m_ClusterSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                this.m_ClusterSocket.Bind(new IPEndPoint(IPAddress.Loopback, 1234));
+                this.m_ClusterSocket.Listen(100);
+
                 ClientManager = new ClientManager();
+                ClusterManager = new ClusterManager();
 
-                Console.WriteLine("Login server started");
+                Thread acceptClustersThread = new Thread(() => ClusterManager.AcceptClusters(this.m_ClusterSocket));
+                acceptClustersThread.Start();
 
-                Thread acceptClientsThread = new Thread(() => ClientManager.AcceptUsers(this.m_Socket));
+                Thread processClustersThread = new Thread(() => ClusterManager.ProcessClusters());
+                processClustersThread.Start();
+
+                Console.WriteLine("Listening for world servers...");
+
+                Thread acceptClientsThread = new Thread(() => ClientManager.AcceptUsers(this.m_ClientSocket));
                 acceptClientsThread.Start();
 
                 Thread processClientsThread = new Thread(() => ClientManager.ProcessUsers());
                 processClientsThread.Start();
+
+                Console.WriteLine("Listening for clients...");
             }
         }
 
         public void Close()
         {
-            this.m_Socket.Shutdown(SocketShutdown.Both);
-            this.m_Socket.Close();
+            this.m_ClientSocket.Shutdown(SocketShutdown.Both);
+            this.m_ClientSocket.Close();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace SharpFly_Login.Clients
 {
-    class ClientManager
+    class ClientManager : IDisposable
     {
         private List<Client> m_Clients;
         private object m_ListLock;
@@ -14,7 +14,6 @@ namespace SharpFly_Login.Clients
             m_Clients = new List<Client>();
             m_ListLock = new object();
         }
-
 
         public void AcceptUsers(Socket socket)
         {
@@ -30,6 +29,13 @@ namespace SharpFly_Login.Clients
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (Client client in m_Clients)
+                client.Dispose();
+            m_Clients.Clear();
         }
 
         public void ProcessUsers()
