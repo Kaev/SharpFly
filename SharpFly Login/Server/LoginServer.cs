@@ -5,14 +5,13 @@ using System.Net;
 using System.Threading;
 using SharpFly_Utility_Library.Database.Databases;
 using SharpFly_Utility_Library.Configuration;
-using SharpFly_Utility_Library.Database;
 
 namespace SharpFly_Login.Server
 {
     class LoginServer
     {
-        public int Port { get; private set; }
-        private Socket Socket { get; set; }
+        private int m_Port { get; set; }
+        private Socket m_Socket { get; set; }
 
         public static Config Config { get; private set; }
         public static ClientManager ClientManager;
@@ -25,15 +24,15 @@ namespace SharpFly_Login.Server
             if (LoginDatabase.Connection.CheckConnection())
             {
                 Security.Rijndael.Initiate();
-                this.Port = Port;
-                this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this.Socket.Bind(new IPEndPoint(IPAddress.Any, this.Port));
-                this.Socket.Listen(100);
+                this.m_Port = Port;
+                this.m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                this.m_Socket.Bind(new IPEndPoint(IPAddress.Any, this.m_Port));
+                this.m_Socket.Listen(100);
                 ClientManager = new ClientManager();
 
                 Console.WriteLine("Login server started");
 
-                Thread acceptClientsThread = new Thread(() => ClientManager.AcceptUsers(this.Socket));
+                Thread acceptClientsThread = new Thread(() => ClientManager.AcceptUsers(this.m_Socket));
                 acceptClientsThread.Start();
 
                 Thread processClientsThread = new Thread(() => ClientManager.ProcessUsers());
@@ -43,8 +42,8 @@ namespace SharpFly_Login.Server
 
         public void Close()
         {
-            this.Socket.Shutdown(SocketShutdown.Both);
-            this.Socket.Close();
+            this.m_Socket.Shutdown(SocketShutdown.Both);
+            this.m_Socket.Close();
         }
     }
 }
