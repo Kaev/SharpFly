@@ -40,6 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packets\Interserver\Incoming\OpCodes.cs" />
+    <Compile Include="Packets\Interserver\Incoming\RegisterClusterRequest.cs" />
+    <Compile Include="Packets\Interserver\Incoming\UpdateClusterChannelPlayerCount.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\OpCodes.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\RegisterClusterRequest.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\UpdateClusterChannelPlayerCount.cs" />
     <Compile Include="Packets\LoginServer\Incoming\LoginRequest.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\LoginServer\Incoming\OpCodes.cs" />
@@ -50,13 +56,12 @@
     <Compile Include="Packets\LoginServer\Outgoing\SessionKey.cs" />
     <Compile Include="Packets\OutgoingPacket.cs" />
     <Compile Include="Packets\PacketBase.cs" />
+    <Compile Include="Packets\WorldServer\Incoming\OpCodes.cs" />
+    <Compile Include="Packets\WorldServer\Outgoing\OpCodes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Crc32.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Packets\Interserver\" />
-    <Folder Include="Packets\WorldServer\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

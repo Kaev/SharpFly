@@ -9,6 +9,7 @@
             base.Read("MySQLPassword", "Password", "MySQL", typeof(string));
             base.Read("MySQLDatabase", "Database", "MySQL", typeof(string));
             base.Read("MySQLPort", "Port", "MySQL", typeof(int));
+            base.Read("ClusterAuthorizationPassword", "ClusterAuthorizationPassword", "Security", typeof(string));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace SharpFly_Packet_Library.Packets.LoginServer.Outgoing
             // for each channel in cluster
             packet.Write(1); // cluster id
             packet.Write(1); // channel id
-            packet.Write(""); // cluster name
+            packet.Write(""); // channel name
             packet.Write(0); // dafuq is this
             packet.Write(0); // dafuq is this
             packet.Write(1); // current amount of players

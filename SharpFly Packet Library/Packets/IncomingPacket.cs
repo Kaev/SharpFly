@@ -19,6 +19,8 @@ namespace SharpFly_Packet_Library.Packets
             }
         }
 
+        public static int HeaderSize = 13;
+
         public int ReceivedSize { get; private set; }
 
         public IncomingPacket()
@@ -28,7 +30,7 @@ namespace SharpFly_Packet_Library.Packets
             ReceivedSize = 0;
         }
 
-        public static IncomingPacket[] SplitPackets(byte[] buffer)
+        public static IncomingPacket[] SplitPackets(byte[] buffer, bool interserverPacket = false)
         {
             try
             {
@@ -41,12 +43,13 @@ namespace SharpFly_Packet_Library.Packets
                 {
                     reader.BaseStream.Position = offset;
                     reader.ReadByte(); // 0x5E
-                    reader.ReadInt32(); // Packet size
+                    if (!interserverPacket)
+                        reader.ReadInt32(); // Length hash
                     int currentSize = reader.ReadInt32();
                     if (currentSize == 0)
                         break;
 
-                    int count = 13 + currentSize; // 13 = headers
+                    int count = HeaderSize + currentSize;
                     byte[] currentBuffer = new byte[count];
                     Array.Copy(buffer, offset, currentBuffer, 0, count);
                     IncomingPacket packet = new IncomingPacket();
@@ -63,9 +66,9 @@ namespace SharpFly_Packet_Library.Packets
             }
         }
 
-        public static IncomingPacket[] SplitPackets(IncomingPacket packet)
+        public static IncomingPacket[] SplitPackets(IncomingPacket packet, bool interserverPacket = false)
         {
-            return SplitPackets(packet.Buffer);
+            return SplitPackets(packet.Buffer, interserverPacket);
         }
 
         public bool VerifyHeaders(int sessionKey)

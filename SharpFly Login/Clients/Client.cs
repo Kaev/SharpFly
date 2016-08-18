@@ -12,15 +12,20 @@ namespace SharpFly_Login.Clients
 {
     class Client : IDisposable
     {
-        private byte[] m_RemainingBytes = null;
 
+        #region "Network related attributes"
+        private byte[] m_RemainingBytes = null;
         public byte[] Buffer { get; set; }
         public const int BufferSize = 1500;
-        public string Password { get; set; }
         public List<byte> ReceivedBytes { get; set; }
-        public uint SessionKey { get; set; }
         public Socket Socket { get; set; }
+        #endregion
+
+        #region "Account attributes"
         public string Username { get; set; }
+        public string Password { get; set; }
+        public uint SessionKey { get; set; }
+        #endregion
 
         private Client() { }
 
@@ -69,7 +74,7 @@ namespace SharpFly_Login.Clients
                         m_RemainingBytes = packet.Buffer;
                     else
                     {
-                        packet.Position = 13; // Go to headers
+                        packet.Position = IncomingPacket.HeaderSize; // Ignore headers
                         uint header = packet.ReadUInt();
                         switch (header)
                         {

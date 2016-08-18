@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Clients\Client.cs" />
     <Compile Include="Clients\ClientManager.cs" />
+    <Compile Include="Clusters\Channel.cs" />
     <Compile Include="Clusters\Cluster.cs" />
     <Compile Include="Clusters\ClusterManager.cs" />
     <Compile Include="Database\PreparedStatements.cs" />

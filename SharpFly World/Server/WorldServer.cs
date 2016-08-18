@@ -1,4 +1,5 @@
-﻿using SharpFly_Utility_Library.Configuration;
+﻿using SharpFly_Packet_Library.Packets.Interserver.Outgoing;
+using SharpFly_Utility_Library.Configuration;
 using SharpFly_Utility_Library.Database.Databases;
 using System;
 using System.Net;
@@ -26,6 +27,8 @@ namespace SharpFly_World.Server
                 if (this.m_Socket.Connected)
                 {
                     Console.WriteLine("Succesfully connected to login server!");
+                    new RegisterClusterRequest((string)Config.GetSetting("ClusterAuthorizationPassword"), "Testcluster", 1, new string[] { "Channel 1" }, new uint[] { 0 }, new uint[] { 50 }, this.m_Socket);
+                    Console.WriteLine("Cluster authorization request sent!");
                 }
             }
         }
