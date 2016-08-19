@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\Channel.cs" />
+    <Compile Include="Helper\Cluster.cs" />
     <Compile Include="Packets\Interserver\Incoming\OpCodes.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterClusterRequest.cs" />
     <Compile Include="Packets\Interserver\Incoming\UpdateClusterChannelPlayerCount.cs" />

@@ -37,6 +37,11 @@ namespace SharpFly_Packet_Library.Packets
         public override long Size
         { get { return base.Size - 5; } }
 
+        public void Write(bool value)
+        {
+            m_Writer.Write(value);
+        }
+
         public void Write(byte value)
         {
             m_Writer.Write(value);

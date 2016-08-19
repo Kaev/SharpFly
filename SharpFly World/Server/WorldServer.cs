@@ -27,7 +27,7 @@ namespace SharpFly_World.Server
                 if (this.m_Socket.Connected)
                 {
                     Console.WriteLine("Succesfully connected to login server!");
-                    new RegisterClusterRequest((string)Config.GetSetting("ClusterAuthorizationPassword"), "Testcluster", 1, new string[] { "Channel 1" }, new uint[] { 0 }, new uint[] { 50 }, this.m_Socket);
+                    new RegisterClusterRequest((string)Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Cluster", 1, new string[] { "SharpFly" }, new uint[] { 0 }, new uint[] { 50 }, this.m_Socket);
                     Console.WriteLine("Cluster authorization request sent!");
                 }
             }

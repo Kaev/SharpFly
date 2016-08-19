@@ -185,7 +185,7 @@ namespace SharpFly_Login.Clients
 
         public void SendServerList()
         {
-            new ServerList(this.Socket);
+            new ServerList(LoginServer.ClusterManager.GetClusters(), this.Username, this.Socket);
         }
 
         public void SendSessionKey()

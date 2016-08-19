@@ -9,6 +9,8 @@ namespace SharpFly_Login.Clusters
         private List<Cluster> m_Clusters;
         private object m_ListLock;
 
+        public static uint Id = 0;
+
         public ClusterManager()
         {
             m_Clusters = new List<Cluster>();
@@ -49,6 +51,14 @@ namespace SharpFly_Login.Clusters
             m_Clusters.Clear();
         }
 
+        public SharpFly_Packet_Library.Helper.Cluster[] GetClusters()
+        {
+            SharpFly_Packet_Library.Helper.Cluster[] clusters = new SharpFly_Packet_Library.Helper.Cluster[m_Clusters.Count];
+            for (int i = 0; i < clusters.Length; i++)
+                clusters[i] = m_Clusters[i].ClusterData;
+            return clusters;
+        }
+
         public void ProcessClusters()
         {
 
@@ -79,6 +89,5 @@ namespace SharpFly_Login.Clusters
                     m_Clusters.Remove(cluster);
             }
         }
-
     }
 }

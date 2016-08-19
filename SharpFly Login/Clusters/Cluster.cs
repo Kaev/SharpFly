@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using SharpFly_Packet_Library.Packets;
 using SharpFly_Login.Server;
 using SharpFly_Packet_Library.Packets.Interserver.Incoming;
+using SharpFly_Packet_Library.Helper;
 
 namespace SharpFly_Login.Clusters
 {
@@ -20,10 +21,8 @@ namespace SharpFly_Login.Clusters
         public Socket Socket { get; set; }
         #endregion
 
-        #region "Cluster and channel attributes"
-        public string Name { get; private set; }
-        public uint ChannelCount { get; private set; }
-        public Channel[] Channel { get; private set; }
+        #region "Cluster attributes"
+        public SharpFly_Packet_Library.Helper.Cluster ClusterData;
         #endregion
 
         private Cluster() { }
@@ -106,25 +105,31 @@ namespace SharpFly_Login.Clusters
                 return;
             }
 
-            this.Name = request.ClusterName;
-            this.ChannelCount = request.ChannelCount;
-            this.Channel = new Channel[this.ChannelCount];
-            for(int i = 0; i < this.ChannelCount; i++)
+            this.ClusterData = new SharpFly_Packet_Library.Helper.Cluster();
+            this.ClusterData.Id = ClusterManager.Id++;
+            this.ClusterData.Ip = "127.0.0.1";
+            this.ClusterData.Name = request.ClusterName;
+            this.ClusterData.ChannelCount = request.ChannelCount;
+            this.ClusterData.Channel = new Channel[this.ClusterData.ChannelCount];
+            for(int i = 0; i < this.ClusterData.ChannelCount; i++)
             {
-                this.Channel[i] = new Channel();
-                this.Channel[i].Name = request.ChannelName[i];
-                this.Channel[i].PlayerCount = request.ChannelPlayerCount[i];
-                this.Channel[i].MaxPlayerCount = request.ChannelPlayerCount[i];
+                this.ClusterData.Channel[i] = new Channel();
+                this.ClusterData.Channel[i].Id = ClusterManager.Id++;
+                this.ClusterData.Channel[i].Name = request.ChannelName[i];
+                this.ClusterData.Channel[i].Parent = this.ClusterData;
+                this.ClusterData.Channel[i].PlayerCount = request.ChannelPlayerCount[i];
+                this.ClusterData.Channel[i].MaxPlayerCount = request.ChannelMaxPlaxerCount[i];
             }
+            
 
-            Console.WriteLine("Cluster identified as {0}!", this.Name);
+            Console.WriteLine("Cluster identified as {0}!", this.ClusterData.Name);
         }
 
         public void UpdateClusterChannelPlayerCount(IncomingPacket packet)
         {
             UpdateClusterChannelPlayerCount request = new UpdateClusterChannelPlayerCount(packet);
-            if (request.ChannelId <= this.ChannelCount)
-                this.Channel[request.ChannelId].PlayerCount = request.NewPlayerCount;
+            if (request.ChannelId <= this.ClusterData.ChannelCount)
+                this.ClusterData.Channel[request.ChannelId].PlayerCount = request.NewPlayerCount;
         }
         #endregion
         #region Outgoing packets
