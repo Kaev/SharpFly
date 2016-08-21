@@ -1,9 +1,8 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 
-namespace SharpFly_Login.Security
+namespace SharpFly_Packet_Library.Security
 {
-    class MD5
+    public class MD5
     {
         public static string ComputeString(string data)
         {

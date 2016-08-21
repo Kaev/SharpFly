@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace SharpFly_Login.Clusters
 {
-    class ClusterManager : IDisposable
+    public class ClusterManager : IDisposable
     {
         private List<Cluster> m_Clusters;
         private object m_ListLock;
@@ -30,18 +30,11 @@ namespace SharpFly_Login.Clusters
 
         public void AcceptClusters(Socket socket)
         {
-            try
-            {
-                while (true)
-                    lock (m_ListLock)
-                    {
-                        m_Clusters.Add(new Cluster(socket.Accept()));
-                    }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            while (true)
+                lock (m_ListLock)
+                {
+                    m_Clusters.Add(new Cluster(socket.Accept()));
+                }
         }
 
         public void Dispose()
@@ -61,23 +54,15 @@ namespace SharpFly_Login.Clusters
 
         public void ProcessClusters()
         {
-
-            try
+            while (true)
             {
-                while (true)
+                lock (m_ListLock)
                 {
-                    lock (m_ListLock)
-                    {
-                        Cluster[] clusters = m_Clusters.ToArray();
-                        for (int i = 0; i < clusters.Length; i++)
-                            if (clusters[i] != null)
-                                clusters[i].ProcessData();
-                    }
+                    Cluster[] clusters = m_Clusters.ToArray();
+                    for (int i = 0; i < clusters.Length; i++)
+                        if (clusters[i] != null)
+                            clusters[i].ProcessData();
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
             }
         }
 

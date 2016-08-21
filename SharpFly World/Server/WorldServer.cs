@@ -1,42 +1,57 @@
-﻿using SharpFly_Packet_Library.Packets.Interserver.Outgoing;
+﻿using SharpFly_Packet_Library.Security;
 using SharpFly_Utility_Library.Configuration;
 using SharpFly_Utility_Library.Database.Databases;
+using SharpFly_World.Player;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace SharpFly_World.Server
 {
-    class WorldServer
+    public class WorldServer : IDisposable
     {
-        private Socket m_Socket { get; set; }
+        private Socket m_PlayerSocket { get; set; }
 
         public static Config Config { get; private set; }
+        public static string IpAddress { get; private set; } = "127.0.0.1";
+        public static LoginDatabase LoginDatabase;
+        public static LoginServerConnector LoginServerConnector;
+        public static PlayerManager PlayerManager;
         public static WorldDatabase WorldDatabase;
 
         public WorldServer(int Port)
         {
+            Rijndael.Initiate();
             Config = new WorldServerConfig("Resources/Config/World.ini");
+            LoginDatabase = new LoginDatabase(Config);
             WorldDatabase = new WorldDatabase(Config);
-            if (WorldDatabase.Connection.CheckConnection())
+            if (WorldDatabase.Connection.CheckConnection() && LoginDatabase.Connection.CheckConnection())
             {
                 Console.WriteLine("Connecting to login server...");
-                this.m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this.m_Socket.Connect(IPAddress.Parse("127.0.0.1"), 1234);
+                LoginServerConnector = new LoginServerConnector();
 
-                if (this.m_Socket.Connected)
+                if (LoginServerConnector.TryConnectToLoginServer())
                 {
-                    Console.WriteLine("Succesfully connected to login server!");
-                    new RegisterClusterRequest((string)Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Cluster", 1, new string[] { "SharpFly" }, new uint[] { 0 }, new uint[] { 50 }, this.m_Socket);
-                    Console.WriteLine("Cluster authorization request sent!");
+                    this.m_PlayerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    this.m_PlayerSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
+                    this.m_PlayerSocket.Listen(100);
+
+                    PlayerManager = new PlayerManager();
+
+                    Thread acceptPlayerThread = new Thread(() => PlayerManager.AcceptPlayers(this.m_PlayerSocket));
+                    acceptPlayerThread.Start();
+
+                    Thread processPlayerThread = new Thread(() => PlayerManager.ProcessPlayers());
+                    processPlayerThread.Start();
                 }
             }
         }
 
-        public void Close()
+        public void Dispose()
         {
-            this.m_Socket.Shutdown(SocketShutdown.Both);
-            this.m_Socket.Close();
+            this.m_PlayerSocket.Shutdown(SocketShutdown.Both);
+            this.m_PlayerSocket.Close();
         }
     }
 }

@@ -64,8 +64,6 @@
     <Compile Include="Clusters\Cluster.cs" />
     <Compile Include="Clusters\ClusterManager.cs" />
     <Compile Include="Database\PreparedStatements.cs" />
-    <Compile Include="Security\MD5.cs" />
-    <Compile Include="Security\Rijndael.cs" />
     <Compile Include="Server\LoginServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

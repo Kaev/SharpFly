@@ -50,34 +50,31 @@ namespace SharpFly_Login.Clusters
                     ReceivedBytes.AddRange(this.Buffer);
                 }
 
-                byte[] data = ReceivedBytes.ToArray();
-                IncomingPacket[] packets = IncomingPacket.SplitPackets(data, true);
-                foreach (IncomingPacket packet in packets)
-                {
-                    if (packet == null)
-                        return;
+                IncomingPacket packet = new IncomingPacket(ReceivedBytes.ToArray());
 
-                    if (m_RemainingBytes != null)
+                if (packet == null)
+                    return;
+
+                if (m_RemainingBytes != null)
+                {
+                    byte[] buffer = new byte[m_RemainingBytes.Length + packet.Buffer.Length];
+                    Array.Copy(m_RemainingBytes, 0, buffer, 0, m_RemainingBytes.Length);
+                    Array.Copy(packet.Buffer, 0, buffer, 0, packet.Buffer.Length);
+                    packet.Buffer = buffer;
+                    m_RemainingBytes = null;
+                }
+                else
+                {
+                    packet.Position = m_InterserverPacketOpCodePosition;
+                    uint header = packet.ReadUInt();
+                    switch (header)
                     {
-                        byte[] buffer = new byte[m_RemainingBytes.Length + packet.Buffer.Length];
-                        Array.Copy(m_RemainingBytes, 0, buffer, 0, m_RemainingBytes.Length);
-                        Array.Copy(packet.Buffer, 0, buffer, 0, packet.Buffer.Length);
-                        packet.Buffer = buffer;
-                        m_RemainingBytes = null;
-                    }
-                    else
-                    {
-                        packet.Position = m_InterserverPacketOpCodePosition;
-                        uint header = packet.ReadUInt();
-                        switch (header)
-                        {
-                            case SharpFly_Packet_Library.Packets.Interserver.Incoming.OpCodes.REGISTER_CLUSTER_REQUEST:
-                                RegisterClusterRequest(packet);
-                                break;
-                            default:
-                                Console.WriteLine(String.Format("Unknown packet header {0}", header));
-                                break;
-                        }
+                        case OpCodes.REGISTER_CLUSTER_REQUEST:
+                            RegisterClusterRequest(packet);
+                            break;
+                        default:
+                            Console.WriteLine(String.Format("Unknown packet header {0}", header));
+                            break;
                     }
                 }
                 ReceivedBytes.Clear();

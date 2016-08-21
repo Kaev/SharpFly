@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SharpFly_Login.Security
+namespace SharpFly_Packet_Library.Security
 {
     public static class Rijndael
     {

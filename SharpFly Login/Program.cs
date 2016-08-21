@@ -20,7 +20,7 @@ namespace SharpFly_Login
 
             LoginServer = new LoginServer(23000);
             Console.ReadLine();
-            LoginServer.Close();
+            LoginServer.Dispose();
         }
 
         // Clean up all active socket before closing the server

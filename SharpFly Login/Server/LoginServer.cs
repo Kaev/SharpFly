@@ -3,13 +3,14 @@ using System.Net.Sockets;
 using SharpFly_Login.Clients;
 using System.Net;
 using System.Threading;
+using SharpFly_Packet_Library.Security;
 using SharpFly_Utility_Library.Database.Databases;
 using SharpFly_Utility_Library.Configuration;
 using SharpFly_Login.Clusters;
 
 namespace SharpFly_Login.Server
 {
-    class LoginServer
+    public class LoginServer : IDisposable
     {
         private Socket m_ClientSocket { get; set; }
         private Socket m_ClusterSocket { get; set; }
@@ -25,7 +26,7 @@ namespace SharpFly_Login.Server
             LoginDatabase = new LoginDatabase(Config);
             if (LoginDatabase.Connection.CheckConnection())
             {
-                Security.Rijndael.Initiate();
+                Rijndael.Initiate();
                 this.m_ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 this.m_ClientSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
                 this.m_ClientSocket.Listen(100);
@@ -55,7 +56,7 @@ namespace SharpFly_Login.Server
             }
         }
 
-        public void Close()
+        public void Dispose()
         {
             this.m_ClientSocket.Shutdown(SocketShutdown.Both);
             this.m_ClientSocket.Close();

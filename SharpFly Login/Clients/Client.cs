@@ -7,10 +7,11 @@ using SharpFly_Login.Server;
 using SharpFly_Packet_Library.Packets;
 using SharpFly_Packet_Library.Packets.LoginServer.Incoming;
 using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
+using SharpFly_Packet_Library.Security;
 
 namespace SharpFly_Login.Clients
 {
-    class Client : IDisposable
+    public class Client : IDisposable
     {
 
         #region "Network related attributes"
@@ -23,7 +24,6 @@ namespace SharpFly_Login.Clients
 
         #region "Account attributes"
         public string Username { get; set; }
-        public string Password { get; set; }
         public uint SessionKey { get; set; }
         #endregion
 
@@ -34,7 +34,7 @@ namespace SharpFly_Login.Clients
             this.Buffer = new byte[BufferSize];
             ReceivedBytes = new List<byte>();
             this.Socket = socket;
-            this.SessionKey = (uint)new Random().Next(0, ushort.MaxValue * 5);
+            this.SessionKey = 82247; //(uint)new Random().Next(0, ushort.MaxValue * 5);
             Console.WriteLine("Client " + this.Socket.RemoteEndPoint + " connected!");
             SendSessionKey();
         }
@@ -53,9 +53,14 @@ namespace SharpFly_Login.Clients
                         return;
                     ReceivedBytes.AddRange(this.Buffer);
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
-                byte[] data = ReceivedBytes.ToArray();
-                IncomingPacket[] packets = IncomingPacket.SplitPackets(data);
+            byte[] data = ReceivedBytes.ToArray();
+                IncomingPacket[] packets = IncomingPacket.SplitLoginServerPackets(data);
                 foreach (IncomingPacket packet in packets)
                 {
                     if (packet == null)
@@ -74,7 +79,7 @@ namespace SharpFly_Login.Clients
                         m_RemainingBytes = packet.Buffer;
                     else
                     {
-                        packet.Position = IncomingPacket.HeaderSize; // Ignore headers
+                        packet.Position = PacketHeader.Size; // Ignore headers
                         uint header = packet.ReadUInt();
                         switch (header)
                         {
@@ -89,18 +94,13 @@ namespace SharpFly_Login.Clients
                                 RelogRequest(packet);
                                 break;
                             default:
-                                Console.WriteLine(String.Format("Unknown packet header {0}", header));
+                                Console.WriteLine(String.Format("Unknown packet header {0:X08}", header));
                                 break;
 
                         }
                     }
                 }
                 ReceivedBytes.Clear();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
         }
 
         public void Dispose()
@@ -132,7 +132,7 @@ namespace SharpFly_Login.Clients
                     return;
                 }
 
-                string password = Security.Rijndael.decrypt(request.Password).TrimEnd('\0');
+                string password = Rijndael.decrypt(request.Password).TrimEnd('\0');
                 if ((string)dt.Rows[0]["Password"] != password)
                 {
                     this.SendLoginFail(LoginError.ERROR_INVALID_PASSWORD);
@@ -173,7 +173,7 @@ namespace SharpFly_Login.Clients
         public void RelogRequest(IncomingPacket packet)
         {
             RelogRequest request = new RelogRequest(packet);
-            string password = Security.MD5.ComputeString(String.Format("{0}{1}", LoginServer.Config.GetSetting("Md5Salt"), request.Password));
+            string password = MD5.ComputeString(String.Format("{0}{1}", LoginServer.Config.GetSetting("Md5Salt"), request.Password));
             // check and kick from world
         }
         #endregion

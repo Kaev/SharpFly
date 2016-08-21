@@ -19,56 +19,71 @@ namespace SharpFly_Packet_Library.Packets
             }
         }
 
-        public static int HeaderSize = 13;
-
-        public int ReceivedSize { get; private set; }
-
         public IncomingPacket()
         {
             base.Stream = new MemoryStream(1452);
             this.m_Reader = new BinaryReader(base.Stream);
-            ReceivedSize = 0;
         }
 
-        public static IncomingPacket[] SplitPackets(byte[] buffer, bool interserverPacket = false)
+        public IncomingPacket(byte[] data)
         {
-            try
-            {
-                List<IncomingPacket> packets = new List<IncomingPacket>();
-                int size = buffer.Length;
-                int offset = 0;
-                BinaryReader reader = new BinaryReader(new MemoryStream(buffer));
-
-                while (offset < size - 1)
-                {
-                    reader.BaseStream.Position = offset;
-                    reader.ReadByte(); // 0x5E
-                    if (!interserverPacket)
-                        reader.ReadInt32(); // Length hash
-                    int currentSize = reader.ReadInt32();
-                    if (currentSize == 0)
-                        break;
-
-                    int count = HeaderSize + currentSize;
-                    byte[] currentBuffer = new byte[count];
-                    Array.Copy(buffer, offset, currentBuffer, 0, count);
-                    IncomingPacket packet = new IncomingPacket();
-                    packet.Buffer = currentBuffer;
-                    packets.Add(packet);
-                    offset += count;
-                }
-                return packets.ToArray();
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
+            base.Stream = new MemoryStream(1452);
+            this.m_Reader = new BinaryReader(base.Stream);
+            this.Buffer = data;
         }
 
-        public static IncomingPacket[] SplitPackets(IncomingPacket packet, bool interserverPacket = false)
+        public static IncomingPacket[] SplitLoginServerPackets(byte[] buffer)
         {
-            return SplitPackets(packet.Buffer, interserverPacket);
+            int offset = 0;
+
+            List<IncomingPacket> packets = new List<IncomingPacket>();
+            BinaryReader reader = new BinaryReader(new MemoryStream(buffer));
+
+            while (true)
+            {
+                LoginServer.Incoming.PacketHeader header = new LoginServer.Incoming.PacketHeader(reader);
+                if (header.Length == 0 || header.StartByte != 0x5E)
+                    break;
+                int count = (int)LoginServer.Incoming.PacketHeader.Size + header.Length;
+                byte[] currentBuffer = new byte[count];
+                Array.Copy(buffer, offset, currentBuffer, 0, count);
+                IncomingPacket packet = new IncomingPacket(currentBuffer);
+                packets.Add(packet);
+                offset += count;
+            }
+            return packets.ToArray();
+        }
+
+        public static IncomingPacket[] SplitLoginServerPackets(IncomingPacket packet)
+        {
+            return SplitLoginServerPackets(packet.Buffer);
+        }
+
+        public static IncomingPacket[] SplitWorldServerPackets(byte[] buffer)
+        {
+            int offset = 0;
+
+            List<IncomingPacket> packets = new List<IncomingPacket>();
+            BinaryReader reader = new BinaryReader(new MemoryStream(buffer));
+
+            while (true)
+            {
+                WorldServer.Incoming.PacketHeader header = new WorldServer.Incoming.PacketHeader(reader);
+                if (header.Length == 0 || header.StartByte != 0x5E)
+                    break;
+                int count = (int)WorldServer.Incoming.PacketHeader.Size + header.Length;
+                byte[] currentBuffer = new byte[count];
+                Array.Copy(buffer, offset, currentBuffer, 0, count);
+                IncomingPacket packet = new IncomingPacket(currentBuffer);
+                packets.Add(packet);
+                offset += count;
+            }
+            return packets.ToArray();
+        }
+
+        public static IncomingPacket[] SplitWorldServerPackets(IncomingPacket packet)
+        {
+            return SplitWorldServerPackets(packet.Buffer);
         }
 
         public bool VerifyHeaders(int sessionKey)

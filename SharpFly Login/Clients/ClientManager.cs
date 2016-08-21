@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace SharpFly_Login.Clients
 {
-    class ClientManager : IDisposable
+    public class ClientManager : IDisposable
     {
         private List<Client> m_Clients;
         private object m_ListLock;
@@ -17,18 +17,11 @@ namespace SharpFly_Login.Clients
 
         public void AcceptUsers(Socket socket)
         {
-            try
-            {
-                while (true)
-                    lock (m_ListLock)
-                    {
-                        m_Clients.Add(new Client(socket.Accept()));
-                    }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            while (true)
+                lock (m_ListLock)
+                {
+                    m_Clients.Add(new Client(socket.Accept()));
+                }
         }
 
         public void Dispose()
@@ -40,29 +33,21 @@ namespace SharpFly_Login.Clients
 
         public void ProcessUsers()
         {
-
-            try
+            while (true)
             {
-                while (true)
+                lock (m_ListLock)
                 {
-                    lock (m_ListLock)
-                    {
-                        Client[] clients = m_Clients.ToArray();
-                        for (int i = 0; i < clients.Length; i++)
-                            if (clients[i] != null)
-                                clients[i].ProcessData();
-                    }
+                    Client[] clients = m_Clients.ToArray();
+                    for (int i = 0; i < clients.Length; i++)
+                        if (clients[i] != null)
+                            clients[i].ProcessData();
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
             }
         }
 
         public void RemoveUser(Client client)
         {
-            lock(m_ListLock)
+            lock (m_ListLock)
             {
                 if (m_Clients.Contains(client))
                     m_Clients.Remove(client);
