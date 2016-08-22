@@ -2,12 +2,12 @@
 using System.Net.Sockets;
 using System.Data;
 using System.Collections.Generic;
-using SharpFly_Login.Database;
 using SharpFly_Login.Server;
 using SharpFly_Packet_Library.Packets;
 using SharpFly_Packet_Library.Packets.LoginServer.Incoming;
 using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
 using SharpFly_Packet_Library.Security;
+using SharpFly_Utility_Library.Database.LoginDatabase.Tables;
 
 namespace SharpFly_Login.Clients
 {
@@ -112,62 +112,62 @@ namespace SharpFly_Login.Clients
 
         #region Incoming packets
         public void LoginRequest(IncomingPacket packet)
-        {   // aka CDPCertified::SendCertify()
-            try
+        {
+            LoginRequest request = new LoginRequest(packet);
+            if (request.BuildDate != (string)LoginServer.Config.GetSetting("ClientBuildDate"))
             {
-                LoginRequest request = new LoginRequest(packet);
-                if (request.BuildDate != (string)LoginServer.Config.GetSetting("ClientBuildDate"))
-                {
-                    this.SendLoginFail(LoginError.ERROR_RESOURCE_FALSIFIED);
-                    this.Dispose();
-                    return;
-                }
+                this.SendLoginFail(LoginError.ERROR_RESOURCE_FALSIFIED);
+                this.Dispose();
+                return;
+            }
 
-                this.Username = request.Username;
-                DataTable dt = PreparedStatements.GET_ACCOUNT_INFORMATIONS.Process(this.Username);
-                if (dt.Rows.Count == 0)
+            this.Username = request.Username;
+
+            Account account;
+            if (LoginServer.LoginDatabase.Accounts.ContainsKey(this.Username))
+                account = LoginServer.LoginDatabase.Accounts[this.Username];
+            else
+            {
+                account = SharpFly_Utility_Library.Database.LoginDatabase.Queries.Account.Instance.GetAccount(this.Username);
+                if (account == null)
                 {
                     this.SendLoginFail(LoginError.ERROR_INVALID_USERNAME);
                     this.Dispose();
                     return;
                 }
-
-                string password = Rijndael.decrypt(request.Password).TrimEnd('\0');
-                if ((string)dt.Rows[0]["Password"] != password)
-                {
-                    this.SendLoginFail(LoginError.ERROR_INVALID_PASSWORD);
-                    this.Dispose();
-                    return;
-                }
-
-                if (Convert.ToBoolean(dt.Rows[0]["Banned"]))
-                {
-                    this.SendLoginFail(LoginError.ERROR_ACCOUNT_BANNED);
-                    this.Dispose();
-                    return;
-                }
-
-                if (!Convert.ToBoolean(dt.Rows[0]["Verified"]))
-                {
-                    this.SendLoginFail(LoginError.ERROR_VERIFICATION_REQUIRED);
-                    this.Dispose();
-                    return;
-                }
-
-                /*
-                TODO:
-                if world down send this.SendLoginFail(LoginError.SERVICE_DOWN);
-                if account already logged in send this.SendLoginFail(LoginError.ACCOUNT_CONNECTED);
-                */
-
-                this.SendServerList();
+                else
+                    LoginServer.LoginDatabase.Accounts.Add(account.Accountname, account);
             }
-            catch(Exception ex)
+
+            string password = Rijndael.decrypt(request.Password).TrimEnd('\0');
+            if (account.Password != password)
             {
-                this.SendLoginFail(LoginError.ERROR_SERVER_ERROR);
+                this.SendLoginFail(LoginError.ERROR_INVALID_PASSWORD);
                 this.Dispose();
-                Console.WriteLine(ex.Message);
+                return;
             }
+
+            if (account.Banned)
+            {
+                this.SendLoginFail(LoginError.ERROR_ACCOUNT_BANNED);
+                this.Dispose();
+                return;
+            }
+
+            if (!account.Verified)
+            {
+                this.SendLoginFail(LoginError.ERROR_VERIFICATION_REQUIRED);
+                this.Dispose();
+                return;
+            }
+
+            /*
+            TODO:
+            if world down send this.SendLoginFail(LoginError.SERVICE_DOWN);
+            if account already logged in send this.SendLoginFail(LoginError.ACCOUNT_CONNECTED);
+            */
+
+            this.SendServerList();
         }
 
         public void RelogRequest(IncomingPacket packet)

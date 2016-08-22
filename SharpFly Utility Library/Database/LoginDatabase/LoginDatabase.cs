@@ -1,13 +1,23 @@
 ﻿using SharpFly_Utility_Library.Configuration;
+using SharpFly_Utility_Library.Database.LoginDatabase.Tables;
+using System.Collections.Generic;
 
-namespace SharpFly_Utility_Library.Database.Databases
+namespace SharpFly_Utility_Library.Database.LoginDatabase
 {
     public class LoginDatabase : Database
     {
+
+        public Dictionary<string, Account> Accounts;
+
         public LoginDatabase(Config config)
         {
             this.Connection = new MySQLConnector((string)config.GetSetting("MySQLAddress"), (int)config.GetSetting("MySQLPort"), (string)config.GetSetting("MySQLUsername"), (string)config.GetSetting("MySQLPassword"), (string)config.GetSetting("MySQLDatabaseLogin"));
             this.Connection.OpenConnection();
+
+            Accounts = new Dictionary<string, Account>();
+            Queries.Account.Instance.Initialize(this);
+            foreach (Account account in Queries.Account.Instance.GetAllAccounts())
+                Accounts.Add(account.Accountname, account);
         }
     }
 }

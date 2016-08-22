@@ -1,6 +1,6 @@
 ﻿using SharpFly_Utility_Library.Configuration;
 
-namespace SharpFly_Utility_Library.Database.Databases
+namespace SharpFly_Utility_Library.Database.WorldDatabase
 {
     public class WorldDatabase : Database
     {

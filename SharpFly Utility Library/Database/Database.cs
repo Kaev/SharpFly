@@ -1,4 +1,4 @@
-﻿namespace SharpFly_Utility_Library.Database.Databases
+﻿namespace SharpFly_Utility_Library.Database
 {
     public abstract class Database
     {

@@ -2,13 +2,11 @@
 using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
 using SharpFly_Packet_Library.Packets.WorldServer.Incoming;
 using SharpFly_Packet_Library.Packets.WorldServer.Outgoing;
-using SharpFly_World.Database;
+using SharpFly_Utility_Library.Database.LoginDatabase.Tables;
 using SharpFly_World.Server;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Net.Sockets;
-using System.Text;
 
 namespace SharpFly_World.Player
 {
@@ -61,55 +59,55 @@ namespace SharpFly_World.Player
             }
 
             byte[] data = ReceivedBytes.ToArray();
-                IncomingPacket[] packets = IncomingPacket.SplitWorldServerPackets(data);
-                foreach (IncomingPacket packet in packets)
+            IncomingPacket[] packets = IncomingPacket.SplitWorldServerPackets(data);
+            foreach (IncomingPacket packet in packets)
+            {
+                if (packet == null)
+                    return;
+
+                if (m_RemainingBytes != null)
                 {
-                    if (packet == null)
-                        return;
+                    byte[] buffer = new byte[m_RemainingBytes.Length + packet.Buffer.Length];
+                    Array.Copy(m_RemainingBytes, 0, buffer, 0, m_RemainingBytes.Length);
+                    Array.Copy(packet.Buffer, 0, buffer, 0, packet.Buffer.Length);
+                    packet.Buffer = buffer;
+                    m_RemainingBytes = null;
+                }
 
-                    if (m_RemainingBytes != null)
+                if (!packet.VerifyHeaders((int)SessionKey))
+                    m_RemainingBytes = packet.Buffer;
+                else
+                {
+                    packet.Position = PacketHeader.DataStartPosition; // Ignore headers and -1 integer
+                    uint header = packet.ReadUInt();
+                    switch (header)
                     {
-                        byte[] buffer = new byte[m_RemainingBytes.Length + packet.Buffer.Length];
-                        Array.Copy(m_RemainingBytes, 0, buffer, 0, m_RemainingBytes.Length);
-                        Array.Copy(packet.Buffer, 0, buffer, 0, packet.Buffer.Length);
-                        packet.Buffer = buffer;
-                        m_RemainingBytes = null;
-                    }
+                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.QUERY_TICK_COUNT:
+                            OnQueryTickCount(packet);
+                            break;
+                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.PING:
+                            OnPing(packet);
+                            break;
+                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.CHARACTER_LIST:
+                            CharacterListRequest(packet);
+                            break;
+                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.DELETE_CHARACTER:
+                            Console.WriteLine("Delete character packet");
+                            break;
+                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.CREATE_CHARACTER:
+                            Console.WriteLine("Create character packet");
+                            break;
+                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.WORLD_TRANSFER:
+                            Console.WriteLine("World transfer packet");
+                            break;
+                        default:
+                            Console.WriteLine(String.Format("Unknown packet header {0:X08}", header));
+                            break;
 
-                    if (!packet.VerifyHeaders((int)SessionKey))
-                        m_RemainingBytes = packet.Buffer;
-                    else
-                    {
-                        packet.Position = PacketHeader.DataStartPosition; // Ignore headers and -1 integer
-                        uint header = packet.ReadUInt();
-                        switch (header)
-                        {
-                            case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.QUERY_TICK_COUNT:
-                                OnQueryTickCount(packet);
-                                break;
-                            case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.PING:
-                                OnPing(packet);
-                                break;
-                            case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.CHARACTER_LIST:
-                                CharacterListRequest(packet);
-                                break;
-                            case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.DELETE_CHARACTER:
-                                Console.WriteLine("Delete character packet");
-                                break;
-                            case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.CREATE_CHARACTER:
-                                Console.WriteLine("Create character packet");
-                                break;
-                            case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.WORLD_TRANSFER:
-                                Console.WriteLine("World transfer packet");
-                                break;
-                            default:
-                                Console.WriteLine(String.Format("Unknown packet header {0:X08}", header));
-                                break;
-
-                        }
                     }
                 }
-                ReceivedBytes.Clear();
+            }
+            ReceivedBytes.Clear();
         }
 
         public void Dispose()
@@ -137,33 +135,39 @@ namespace SharpFly_World.Player
             }
 
             this.Username = request.Username;
-            DataTable dt = PreparedStatements.GET_ACCOUNT_INFORMATIONS.Process(this.Username);
-            if (dt.Rows.Count == 0)
+
+            Account account;
+            if (WorldServer.LoginDatabase.Accounts.ContainsKey(this.Username))
+                account = WorldServer.LoginDatabase.Accounts[this.Username];
+            else
+            {
+                account = SharpFly_Utility_Library.Database.LoginDatabase.Queries.Account.Instance.GetAccount(this.Username);
+                if (account == null)
+                {
+                    this.Dispose();
+                    return;
+                }
+                else
+                    WorldServer.LoginDatabase.Accounts.Add(account.Accountname, account);
+            }
+
+            if (account.Password != request.Password)
             {
                 this.Dispose();
                 return;
             }
 
-            //string password = Rijndael.decrypt(Encoding.Unicode.GetBytes(request.Password)).TrimEnd('\0');
-            if ((string)dt.Rows[0]["Password"] != request.Password)
+            if (account.Banned)
             {
                 this.Dispose();
                 return;
             }
 
-            if (Convert.ToBoolean(dt.Rows[0]["Banned"]))
+            if (!account.Verified)
             {
                 this.Dispose();
                 return;
             }
-
-            if (!Convert.ToBoolean(dt.Rows[0]["Verified"]))
-            {
-                this.Dispose();
-                return;
-            }
-
-
 
             SendServerIp();
             SendCharacterList(request.TimeGetTime);

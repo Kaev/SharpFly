@@ -47,10 +47,11 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\LoginServerConfig.cs" />
     <Compile Include="Configuration\WorldServerConfig.cs" />
-    <Compile Include="Database\Databases\Database.cs" />
-    <Compile Include="Database\Databases\LoginDatabase.cs" />
-    <Compile Include="Database\Databases\Tables\LoginDatabase\Accounts.cs" />
-    <Compile Include="Database\Databases\WorldDatabase.cs" />
+    <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\LoginDatabase\LoginDatabase.cs" />
+    <Compile Include="Database\LoginDatabase\Queries\Account.cs" />
+    <Compile Include="Database\LoginDatabase\Tables\Account.cs" />
+    <Compile Include="Database\WorldDatabase\WorldDatabase.cs" />
     <Compile Include="Database\MySQLConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Configuration\IniFile.cs" />
@@ -61,7 +62,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Database\Databases\Tables\WorldDatabase\" />
+    <Folder Include="Database\WorldDatabase\Queries\" />
+    <Folder Include="Database\WorldDatabase\Tables\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

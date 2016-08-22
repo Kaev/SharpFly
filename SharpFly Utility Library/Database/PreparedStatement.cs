@@ -10,7 +10,7 @@ namespace SharpFly_Utility_Library.Database
 
         public string Query { get; private set; }
 
-        public PreparedStatement(Databases.Database database, string query, params MySqlParameter[] parameters)
+        public PreparedStatement(Database database, string query, params MySqlParameter[] parameters)
         {
             Query = query;
             m_Command = new MySqlCommand(Query, database.Connection.Connection);
