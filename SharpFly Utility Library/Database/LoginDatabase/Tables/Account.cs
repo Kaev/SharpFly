@@ -5,11 +5,11 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Tables
 {
     public class Account
     {
-        public int Id;
-        public string Accountname;
-        public string Password;
-        public bool Banned;
-        public bool Verified;
+        public int Id { get; set; }
+        public string Accountname { get; set; }
+        public string Password { get; set; }
+        public bool Banned { get; set; }
+        public bool Verified { get; set; }
 
         public Account(DataRow row)
         {

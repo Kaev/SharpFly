@@ -50,7 +50,9 @@
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\LoginDatabase\LoginDatabase.cs" />
     <Compile Include="Database\LoginDatabase\Queries\Account.cs" />
+    <Compile Include="Database\LoginDatabase\Queries\Cluster.cs" />
     <Compile Include="Database\LoginDatabase\Tables\Account.cs" />
+    <Compile Include="Database\LoginDatabase\Tables\Cluster.cs" />
     <Compile Include="Database\WorldDatabase\WorldDatabase.cs" />
     <Compile Include="Database\MySQLConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />

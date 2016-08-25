@@ -12,3 +12,14 @@ CREATE TABLE `accounts` (
   `Verified` bit(1) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for `clusters`
+-- ----------------------------
+DROP TABLE IF EXISTS `clusters`;
+CREATE TABLE `clusters` (
+  `Id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Ip` varchar(12) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;

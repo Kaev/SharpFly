@@ -19,7 +19,7 @@ namespace SharpFly_Utility_Library.Database
             m_Command.Prepare();
         }
 
-        public DataTable Process(params string[] parameters)
+        public DataTable Process(params object[] parameters)
         {
             try
             {
