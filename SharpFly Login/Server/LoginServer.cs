@@ -44,7 +44,7 @@ namespace SharpFly_Login.Server
                 Thread processClustersThread = new Thread(() => ClusterManager.ProcessClusters());
                 processClustersThread.Start();
 
-                Console.WriteLine("Listening for world servers...");
+                Console.WriteLine("Listening for cluster servers...");
 
                 Thread acceptClientsThread = new Thread(() => ClientManager.AcceptUsers(this.m_ClientSocket));
                 acceptClientsThread.Start();

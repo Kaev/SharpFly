@@ -59,7 +59,7 @@ namespace SharpFly_Packet_Library.Packets
             return SplitLoginServerPackets(packet.Buffer);
         }
 
-        public static IncomingPacket[] SplitWorldServerPackets(byte[] buffer)
+        public static IncomingPacket[] SplitClusterServerPackets(byte[] buffer)
         {
             int offset = 0;
 
@@ -68,10 +68,10 @@ namespace SharpFly_Packet_Library.Packets
 
             while (true)
             {
-                WorldServer.Incoming.PacketHeader header = new WorldServer.Incoming.PacketHeader(reader);
+                ClusterServer.Incoming.PacketHeader header = new ClusterServer.Incoming.PacketHeader(reader);
                 if (header.Length == 0 || header.StartByte != 0x5E)
                     break;
-                int count = (int)WorldServer.Incoming.PacketHeader.Size + header.Length;
+                int count = (int)ClusterServer.Incoming.PacketHeader.Size + header.Length;
                 byte[] currentBuffer = new byte[count];
                 Array.Copy(buffer, offset, currentBuffer, 0, count);
                 IncomingPacket packet = new IncomingPacket(currentBuffer);
@@ -81,9 +81,9 @@ namespace SharpFly_Packet_Library.Packets
             return packets.ToArray();
         }
 
-        public static IncomingPacket[] SplitWorldServerPackets(IncomingPacket packet)
+        public static IncomingPacket[] SplitClusterServerPackets(IncomingPacket packet)
         {
-            return SplitWorldServerPackets(packet.Buffer);
+            return SplitClusterServerPackets(packet.Buffer);
         }
 
         public bool VerifyHeaders(int sessionKey)

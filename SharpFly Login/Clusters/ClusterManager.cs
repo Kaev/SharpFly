@@ -44,12 +44,12 @@ namespace SharpFly_Login.Clusters
             m_Clusters.Clear();
         }
 
-        public SharpFly_Packet_Library.Helper.Cluster[] GetClusters()
+        public List<SharpFly_Packet_Library.Helper.Cluster> GetClusters()
         {
-            SharpFly_Packet_Library.Helper.Cluster[] clusters = new SharpFly_Packet_Library.Helper.Cluster[m_Clusters.Count];
-            for (int i = 0; i < clusters.Length; i++)
-                clusters[i] = m_Clusters[i].ClusterData;
-            return clusters;
+            List<SharpFly_Packet_Library.Helper.Cluster> retVal = new List<SharpFly_Packet_Library.Helper.Cluster>();
+            foreach (Cluster cluster in m_Clusters)
+                retVal.Add(cluster.ClusterData);
+            return retVal;
         }
 
         public void ProcessClusters()

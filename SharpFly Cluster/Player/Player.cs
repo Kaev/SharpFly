@@ -1,14 +1,14 @@
 ﻿using SharpFly_Packet_Library.Packets;
 using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
-using SharpFly_Packet_Library.Packets.WorldServer.Incoming;
-using SharpFly_Packet_Library.Packets.WorldServer.Outgoing;
+using SharpFly_Packet_Library.Packets.ClusterServer.Incoming;
+using SharpFly_Packet_Library.Packets.ClusterServer.Outgoing;
 using SharpFly_Utility_Library.Database.LoginDatabase.Tables;
-using SharpFly_World.Server;
+using SharpFly_Cluster.Server;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace SharpFly_World.Player
+namespace SharpFly_Cluster.Player
 {
     public class Player : IDisposable
     {
@@ -59,7 +59,7 @@ namespace SharpFly_World.Player
             }
 
             byte[] data = ReceivedBytes.ToArray();
-            IncomingPacket[] packets = IncomingPacket.SplitWorldServerPackets(data);
+            IncomingPacket[] packets = IncomingPacket.SplitClusterServerPackets(data);
             foreach (IncomingPacket packet in packets)
             {
                 if (packet == null)
@@ -82,22 +82,22 @@ namespace SharpFly_World.Player
                     uint header = packet.ReadUInt();
                     switch (header)
                     {
-                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.QUERY_TICK_COUNT:
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.QUERY_TICK_COUNT:
                             OnQueryTickCount(packet);
                             break;
-                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.PING:
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.PING:
                             OnPing(packet);
                             break;
-                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.CHARACTER_LIST:
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.CHARACTER_LIST:
                             CharacterListRequest(packet);
                             break;
-                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.DELETE_CHARACTER:
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.DELETE_CHARACTER:
                             Console.WriteLine("Delete character packet");
                             break;
-                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.CREATE_CHARACTER:
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.CREATE_CHARACTER:
                             Console.WriteLine("Create character packet");
                             break;
-                        case SharpFly_Packet_Library.Packets.WorldServer.Incoming.OpCodes.WORLD_TRANSFER:
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.WORLD_TRANSFER:
                             Console.WriteLine("World transfer packet");
                             break;
                         default:
@@ -112,7 +112,7 @@ namespace SharpFly_World.Player
 
         public void Dispose()
         {
-            WorldServer.PlayerManager.RemovePlayer(this);
+            ClusterServer.PlayerManager.RemovePlayer(this);
             this.Socket.Shutdown(SocketShutdown.Both);
             this.Socket.Close();
         }
@@ -120,7 +120,7 @@ namespace SharpFly_World.Player
         #region Incoming packets
         public void OnQueryTickCount(IncomingPacket packet)
         {
-            SharpFly_Packet_Library.Packets.WorldServer.Incoming.QueryTickCount request = new SharpFly_Packet_Library.Packets.WorldServer.Incoming.QueryTickCount(packet);
+            SharpFly_Packet_Library.Packets.ClusterServer.Incoming.QueryTickCount request = new SharpFly_Packet_Library.Packets.ClusterServer.Incoming.QueryTickCount(packet);
             SendQueryTickCount(request.Time);
         }
 
@@ -128,7 +128,7 @@ namespace SharpFly_World.Player
         {
             CharacterListRequest request = new CharacterListRequest(packet);
 
-            if (request.BuildDate != (string)WorldServer.Config.GetSetting("ClientBuildDate"))
+            if (request.BuildDate != (string)ClusterServer.Config.GetSetting("ClientBuildDate"))
             {
                 this.Dispose();
                 return;
@@ -137,8 +137,8 @@ namespace SharpFly_World.Player
             this.Username = request.Username;
 
             Account account;
-            if (WorldServer.LoginDatabase.Accounts.ContainsKey(this.Username))
-                account = WorldServer.LoginDatabase.Accounts[this.Username];
+            if (ClusterServer.LoginDatabase.Accounts.ContainsKey(this.Username))
+                account = ClusterServer.LoginDatabase.Accounts[this.Username];
             else
             {
                 account = SharpFly_Utility_Library.Database.LoginDatabase.Queries.Account.Instance.GetAccount(this.Username);
@@ -148,7 +148,7 @@ namespace SharpFly_World.Player
                     return;
                 }
                 else
-                    WorldServer.LoginDatabase.Accounts.Add(account.Accountname, account);
+                    ClusterServer.LoginDatabase.Accounts.Add(account.Accountname, account);
             }
 
             if (account.Password != request.Password)
@@ -187,7 +187,7 @@ namespace SharpFly_World.Player
 
         public void SendServerIp()
         {
-            new ServerIp(WorldServer.IpAddress, this.Socket);
+            new ServerIp(ClusterServer.IpAddress, this.Socket);
         }
 
         public void SendCharacterList(uint TimeGetTime)
@@ -197,7 +197,7 @@ namespace SharpFly_World.Player
 
         public void SendQueryTickCount(int time)
         {
-            new SharpFly_Packet_Library.Packets.WorldServer.Outgoing.QueryTickCount(time, this.Socket);
+            new SharpFly_Packet_Library.Packets.ClusterServer.Outgoing.QueryTickCount(time, this.Socket);
         }
 
         public void SendPong(int time)

@@ -1,16 +1,16 @@
 ﻿using SharpFly_Packet_Library.Security;
 using SharpFly_Utility_Library.Configuration;
 using SharpFly_Utility_Library.Database.LoginDatabase;
-using SharpFly_Utility_Library.Database.WorldDatabase;
-using SharpFly_World.Player;
+using SharpFly_Utility_Library.Database.ClusterDatabase;
+using SharpFly_Cluster.Player;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace SharpFly_World.Server
+namespace SharpFly_Cluster.Server
 {
-    public class WorldServer : IDisposable
+    public class ClusterServer : IDisposable
     {
         private Socket m_PlayerSocket { get; set; }
 
@@ -19,15 +19,15 @@ namespace SharpFly_World.Server
         public static LoginDatabase LoginDatabase;
         public static LoginServerConnector LoginServerConnector;
         public static PlayerManager PlayerManager;
-        public static WorldDatabase WorldDatabase;
+        public static ClusterDatabase ClusterDatabase;
 
-        public WorldServer(int Port)
+        public ClusterServer(int Port)
         {
             Rijndael.Initiate();
-            Config = new WorldServerConfig("Resources/Config/World.ini");
+            Config = new ClusterServerConfig("Resources/Config/Cluster.ini");
             LoginDatabase = new LoginDatabase(Config);
-            WorldDatabase = new WorldDatabase(Config);
-            if (WorldDatabase.Connection.CheckConnection() && LoginDatabase.Connection.CheckConnection())
+            ClusterDatabase = new ClusterDatabase(Config);
+            if (ClusterDatabase.Connection.CheckConnection() && LoginDatabase.Connection.CheckConnection())
             {
                 Console.WriteLine("Connecting to login server...");
                 LoginServerConnector = new LoginServerConnector();

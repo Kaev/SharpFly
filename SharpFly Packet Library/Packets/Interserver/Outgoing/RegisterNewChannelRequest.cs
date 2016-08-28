@@ -2,15 +2,15 @@
 
 namespace SharpFly_Packet_Library.Packets.Interserver.Outgoing
 {
-    public class RegisterClusterRequest
+    public class RegisterNewChannelRequest
     {
-        public RegisterClusterRequest(string authorizationPassword, uint id, string name, string ip, Socket socket)
+        public RegisterNewChannelRequest(string authorizationPassword, string name, uint playerCount, uint maxPlayerCount, Socket socket)
         {
             OutgoingPacket packet = new OutgoingPacket(OpCodes.REGISTER_CLUSTER_REQUEST);
             packet.Write(authorizationPassword);
-            packet.Write(id);
             packet.Write(name);
-            packet.Write(ip);
+            packet.Write(playerCount);
+            packet.Write(maxPlayerCount);
             packet.Send(socket);
         }
     }

@@ -1,18 +1,18 @@
 ﻿namespace SharpFly_Packet_Library.Packets.Interserver.Incoming
 {
-    public class RegisterClusterRequest
+    public class RegisterNewChannelRequest
     {
         public string AuthorizationPassword { get; private set; }
-        public uint Id { get; private set; }
         public string Name { get; private set; }
-        public string Ip { get; private set; }
+        public uint PlayerCount { get; private set; }
+        public uint MaxPlayerCount { get; private set; }
 
-        public RegisterClusterRequest(IncomingPacket packet)
+        public RegisterNewChannelRequest(IncomingPacket packet)
         {
             AuthorizationPassword = packet.ReadString();
-            Id = packet.ReadUInt();
             Name = packet.ReadString();
-            Ip = packet.ReadString();
+            PlayerCount = packet.ReadUInt();
+            MaxPlayerCount = packet.ReadUInt();
         }
     }
 }

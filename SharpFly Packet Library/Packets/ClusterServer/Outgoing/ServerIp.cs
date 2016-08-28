@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace SharpFly_Packet_Library.Packets.WorldServer.Outgoing
+namespace SharpFly_Packet_Library.Packets.ClusterServer.Outgoing
 {
     public class ServerIp
     {

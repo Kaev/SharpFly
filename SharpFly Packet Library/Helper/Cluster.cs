@@ -1,11 +1,17 @@
-﻿namespace SharpFly_Packet_Library.Helper
+﻿using System.Collections.Generic;
+
+namespace SharpFly_Packet_Library.Helper
 {
     public class Cluster
     {
-        public Channel[] Channel { get; set; }
-        public uint ChannelCount { get; set; }
+        public int ParentId { get; private set; } = -1;
         public uint Id { get; set; }
-        public string Ip { get; set; }
         public string Name { get; set; }
+        public string Ip { get; set; }
+        public int Is18Plus { get; private set; } = 0;
+        public uint PlayerCount { get; private set; } = 0;
+        public int Enabled { get; set; } = 1;
+        public uint MaxPlayerCount { get; private set; } = 0;
+        public List<Channel> Channels { get; set; }
     }
 }

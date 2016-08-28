@@ -3,7 +3,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace SharpFly_World.Server
+namespace SharpFly_Cluster.Server
 {
     public class LoginServerConnector : IDisposable
     {
@@ -27,7 +27,7 @@ namespace SharpFly_World.Server
             if (this.m_Socket.Connected)
             {
                 Console.WriteLine("Succesfully connected to login server!");
-                new RegisterClusterRequest((string)WorldServer.Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Cluster", 1, new string[] { "SharpFly" }, new uint[] { 0 }, new uint[] { 50 }, this.m_Socket);
+                //new RegisterClusterRequest((string)ClusterServer.Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Cluster", 1, new string[] { "SharpFly" }, new uint[] { 0 }, new uint[] { 50 }, this.m_Socket);
                 Console.WriteLine("Cluster authorization request sent!");
 
                 //TODO: Add check if connection was succesful

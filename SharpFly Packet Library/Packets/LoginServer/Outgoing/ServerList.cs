@@ -1,41 +1,39 @@
 ﻿using SharpFly_Packet_Library.Helper;
+using System.Collections.Generic;
 using System.Net.Sockets;
 
 namespace SharpFly_Packet_Library.Packets.LoginServer.Outgoing
 {
     public class ServerList
     {
-        public ServerList(Cluster[] clusters, string accountName, Socket socket)
+        public ServerList(List<Cluster> clusters, string accountName, Socket socket)
         {
             OutgoingPacket packet = new OutgoingPacket(OpCodes.SERVER_LIST);
-            packet.Write(0); // authkey?
+            packet.Write(0); // authkey
             packet.Write((byte)1); // accountflag
-            packet.Write(accountName.ToLower()); // accountname in lower
-            uint clusterAndChannelCount = (uint)clusters.Length;
-            for (int i = 0; i < clusters.Length; i++)
-                clusterAndChannelCount += clusters[i].ChannelCount;
-            packet.Write(clusterAndChannelCount); // number of cluster + channel
-            for (int i = 0; i < clusters.Length; i++)
+            packet.Write(accountName.ToLower());
+            uint clusterAndChannelCount = (uint)clusters.Count;
+            foreach (Cluster cluster in clusters)
             {
-                packet.Write(-1); // parent id - -1 because cluster
-                packet.Write(clusters[i].Id); // cluster id;
-                packet.Write(clusters[i].Name); // cluster name
-                packet.Write(clusters[i].Ip); // cluster ip
-                packet.Write(0); // named 18 on official - probably unused
-                packet.Write(0); // player count on channel - probably unused on cluster
-                packet.Write(1); // enable - cluster too? probably unused
-                packet.Write(0); // max player count on channel - probably unused on cluster
+                packet.Write(cluster.ParentId);
+                packet.Write(cluster.Id);
+                packet.Write(cluster.Name);
+                packet.Write(cluster.Ip);
+                packet.Write(cluster.Is18Plus);
+                packet.Write(cluster.PlayerCount);
+                packet.Write(cluster.Enabled);
+                packet.Write(cluster.MaxPlayerCount);
 
-                for(int j = 0; j < clusters[i].ChannelCount; j++)
+                foreach (Channel channel in cluster.Channels)
                 {
-                    packet.Write(clusters[i].Channel[j].Parent.Id); // cluster id
-                    packet.Write(clusters[i].Channel[j].Id); // channel id
-                    packet.Write(clusters[i].Channel[j].Name); // channel name
-                    packet.Write(0); // ip - only used in cluster
-                    packet.Write(0); // named 18 on official - probably unused
-                    packet.Write(clusters[i].Channel[j].PlayerCount); // current amount of players
-                    packet.Write(1); // enable in official - enable cluster?
-                    packet.Write(clusters[i].Channel[j].MaxPlayerCount); // max player count on channel
+                    packet.Write(channel.Parent.Id);
+                    packet.Write(channel.Id);
+                    packet.Write(channel.Name);
+                    packet.Write(channel.Ip);
+                    packet.Write(channel.Is18Plus);
+                    packet.Write(channel.PlayerCount);
+                    packet.Write(channel.Enabled);
+                    packet.Write(channel.MaxPlayerCount);
                 }
             }
             packet.Send(socket);

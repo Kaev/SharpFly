@@ -32,7 +32,7 @@ namespace SharpFly_Login.Clusters
             this.Buffer = new byte[BufferSize];
             ReceivedBytes = new List<byte>();
             this.Socket = socket;
-            Console.WriteLine("New world server " + this.Socket.RemoteEndPoint + " connected!");
+            Console.WriteLine("New cluster server " + this.Socket.RemoteEndPoint + " connected!");
         }
 
         public void ProcessData()
@@ -72,6 +72,9 @@ namespace SharpFly_Login.Clusters
                         case OpCodes.REGISTER_CLUSTER_REQUEST:
                             RegisterClusterRequest(packet);
                             break;
+                        case OpCodes.REGISTER_NEW_CHANNEL:
+                            RegisterNewChannel(packet);
+                            break;
                         default:
                             Console.WriteLine(String.Format("Unknown packet header {0}", header));
                             break;
@@ -96,37 +99,34 @@ namespace SharpFly_Login.Clusters
         public void RegisterClusterRequest(IncomingPacket packet)
         {
             RegisterClusterRequest request = new RegisterClusterRequest(packet);
-            if (request.ClusterAuthorizationPassword != (string)LoginServer.Config.GetSetting("ClusterAuthorizationPassword"))
+            if (request.AuthorizationPassword != (string)LoginServer.Config.GetSetting("ClusterAuthorizationPassword"))
             {
                 this.Dispose();
                 return;
             }
 
             this.ClusterData = new SharpFly_Packet_Library.Helper.Cluster();
-            this.ClusterData.Id = ClusterManager.Id++;
-            this.ClusterData.Ip = "127.0.0.1";
-            this.ClusterData.Name = request.ClusterName;
-            this.ClusterData.ChannelCount = request.ChannelCount;
-            this.ClusterData.Channel = new Channel[this.ClusterData.ChannelCount];
-            for(int i = 0; i < this.ClusterData.ChannelCount; i++)
-            {
-                this.ClusterData.Channel[i] = new Channel();
-                this.ClusterData.Channel[i].Id = ClusterManager.Id++;
-                this.ClusterData.Channel[i].Name = request.ChannelName[i];
-                this.ClusterData.Channel[i].Parent = this.ClusterData;
-                this.ClusterData.Channel[i].PlayerCount = request.ChannelPlayerCount[i];
-                this.ClusterData.Channel[i].MaxPlayerCount = request.ChannelMaxPlaxerCount[i];
-            }
-            
+            this.ClusterData.Id = request.Id;
+            this.ClusterData.Name = request.Name;
+            this.ClusterData.Ip = request.Ip;
 
             Console.WriteLine("Cluster identified as {0}!", this.ClusterData.Name);
         }
 
-        public void UpdateClusterChannelPlayerCount(IncomingPacket packet)
+        public void RegisterNewChannel(IncomingPacket packet)
         {
-            UpdateClusterChannelPlayerCount request = new UpdateClusterChannelPlayerCount(packet);
-            if (request.ChannelId <= this.ClusterData.ChannelCount)
-                this.ClusterData.Channel[request.ChannelId].PlayerCount = request.NewPlayerCount;
+            RegisterNewChannelRequest request = new RegisterNewChannelRequest(packet);
+
+            Channel channel = new Channel();
+            channel.Parent = this.ClusterData;
+            channel.Id = ClusterManager.Id++;
+            channel.Name = request.Name;
+            channel.PlayerCount = request.PlayerCount;
+            channel.MaxPlayerCount = request.MaxPlayerCount;
+
+            this.ClusterData.Channels.Add(channel);
+
+            Console.WriteLine("Registered channel {0} on cluster {1}", channel.Name, this.ClusterData.Name);
         }
         #endregion
         #region Outgoing packets

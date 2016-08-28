@@ -1,4 +1,4 @@
-﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
+﻿namespace SharpFly_Packet_Library.Packets.ClusterServer.Incoming
 {
     public class QueryTickCount
     {

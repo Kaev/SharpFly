@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace SharpFly_World.Player
+namespace SharpFly_Cluster.Player
 {
     public class PlayerManager : IDisposable
     {

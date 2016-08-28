@@ -1,16 +1,15 @@
 ﻿using System;
-using SharpFly_World.Server;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SharpFly_World
 {
     class Program
     {
-        public static WorldServer WorldServer;
-
         static void Main(string[] args)
         {
-            WorldServer = new WorldServer(28000);
-            Console.ReadLine();
         }
     }
 }
