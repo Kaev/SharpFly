@@ -30,6 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncIO, Version=0.1.20.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncIO.0.1.20.0\lib\net40\AsyncIO.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NetMQ, Version=3.3.3.4, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetMQ.3.3.3.4\lib\net40\NetMQ.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Helper\Channel.cs" />
     <Compile Include="Helper\Cluster.cs" />
+    <Compile Include="Packets\IncomingInterserverPacket.cs" />
     <Compile Include="Packets\Interserver\Incoming\OpCodes.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterClusterRequest.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterNewChannelRequest.cs" />
@@ -57,6 +66,7 @@
     <Compile Include="Packets\LoginServer\Outgoing\OpCodes.cs" />
     <Compile Include="Packets\LoginServer\Outgoing\ServerList.cs" />
     <Compile Include="Packets\LoginServer\Outgoing\SessionKey.cs" />
+    <Compile Include="Packets\OutgoingInterserverPacket.cs" />
     <Compile Include="Packets\OutgoingPacket.cs" />
     <Compile Include="Packets\PacketBase.cs" />
     <Compile Include="Packets\ClusterServer\Incoming\CharacterListRequest.cs" />
@@ -74,7 +84,9 @@
     <Compile Include="Security\MD5.cs" />
     <Compile Include="Security\Rijndael.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

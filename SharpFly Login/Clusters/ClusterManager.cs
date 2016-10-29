@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
+using System.Linq;
 
 namespace SharpFly_Login.Clusters
 {
@@ -19,51 +19,35 @@ namespace SharpFly_Login.Clusters
 
         ~ClusterManager()
         {
-            lock (m_ListLock)
-            {
-                foreach (Cluster cluster in m_Clusters)
-                    cluster.Dispose();
-                m_Clusters.Clear();
-            }
+            Dispose();
         }
 
-
-        public void AcceptClusters(Socket socket)
+        public void AddCluster(Cluster cluster)
         {
-            while (true)
-                lock (m_ListLock)
-                {
-                    m_Clusters.Add(new Cluster(socket.Accept()));
-                }
+            lock (m_ListLock)
+            {
+                m_Clusters.Add(cluster);
+            }
         }
 
         public void Dispose()
         {
-            foreach (Cluster cluster in m_Clusters)
+            foreach (Cluster cluster in m_Clusters.ToArray())
                 cluster.Dispose();
             m_Clusters.Clear();
+        }
+
+        public Cluster GetClusterById(uint id)
+        {
+            return m_Clusters.FirstOrDefault(cluster => cluster.ClusterData.Id == id);
         }
 
         public List<SharpFly_Packet_Library.Helper.Cluster> GetClusters()
         {
             List<SharpFly_Packet_Library.Helper.Cluster> retVal = new List<SharpFly_Packet_Library.Helper.Cluster>();
-            foreach (Cluster cluster in m_Clusters)
+            foreach (Cluster cluster in m_Clusters.ToArray())
                 retVal.Add(cluster.ClusterData);
             return retVal;
-        }
-
-        public void ProcessClusters()
-        {
-            while (true)
-            {
-                lock (m_ListLock)
-                {
-                    Cluster[] clusters = m_Clusters.ToArray();
-                    for (int i = 0; i < clusters.Length; i++)
-                        if (clusters[i] != null)
-                            clusters[i].ProcessData();
-                }
-            }
         }
 
         public void RemoveCluster(Cluster cluster)

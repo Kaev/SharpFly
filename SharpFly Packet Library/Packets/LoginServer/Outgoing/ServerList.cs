@@ -12,7 +12,10 @@ namespace SharpFly_Packet_Library.Packets.LoginServer.Outgoing
             packet.Write(0); // authkey
             packet.Write((byte)1); // accountflag
             packet.Write(accountName.ToLower());
-            uint clusterAndChannelCount = (uint)clusters.Count;
+            int clusterAndChannelCount = clusters.Count;
+            foreach (Cluster cluster in clusters)
+                clusterAndChannelCount += cluster.Channels.Count;
+            packet.Write(clusterAndChannelCount);
             foreach (Cluster cluster in clusters)
             {
                 packet.Write(cluster.ParentId);

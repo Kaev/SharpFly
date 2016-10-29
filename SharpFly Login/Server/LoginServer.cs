@@ -7,13 +7,14 @@ using SharpFly_Packet_Library.Security;
 using SharpFly_Utility_Library.Configuration;
 using SharpFly_Login.Clusters;
 using SharpFly_Utility_Library.Database.LoginDatabase;
+using SharpFly_Login.Server.Interserver;
 
 namespace SharpFly_Login.Server
 {
     public class LoginServer : IDisposable
     {
         private Socket m_ClientSocket { get; set; }
-        private Socket m_ClusterSocket { get; set; }
+        private ClusterConnector m_ClusterConnector { get; set; }
 
         public static Config Config { get; private set; }
         public static ClientManager ClientManager;
@@ -27,24 +28,16 @@ namespace SharpFly_Login.Server
             if (LoginDatabase.Connection.CheckConnection())
             {
                 Rijndael.Initiate();
+
+                this.m_ClusterConnector = new ClusterConnector();
+                this.m_ClusterConnector.StartListening();
+                ClusterManager = new ClusterManager();
+                Console.WriteLine("Listening for cluster servers...");
+
                 this.m_ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 this.m_ClientSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
                 this.m_ClientSocket.Listen(100);
-
-                this.m_ClusterSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this.m_ClusterSocket.Bind(new IPEndPoint(IPAddress.Loopback, 1234));
-                this.m_ClusterSocket.Listen(100);
-
                 ClientManager = new ClientManager();
-                ClusterManager = new ClusterManager();
-
-                Thread acceptClustersThread = new Thread(() => ClusterManager.AcceptClusters(this.m_ClusterSocket));
-                acceptClustersThread.Start();
-
-                Thread processClustersThread = new Thread(() => ClusterManager.ProcessClusters());
-                processClustersThread.Start();
-
-                Console.WriteLine("Listening for cluster servers...");
 
                 Thread acceptClientsThread = new Thread(() => ClientManager.AcceptUsers(this.m_ClientSocket));
                 acceptClientsThread.Start();
@@ -58,6 +51,7 @@ namespace SharpFly_Login.Server
 
         public void Dispose()
         {
+            this.m_ClusterConnector.Dispose();
             this.m_ClientSocket.Shutdown(SocketShutdown.Both);
             this.m_ClientSocket.Close();
         }

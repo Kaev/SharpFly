@@ -1,5 +1,6 @@
 ﻿using System;
 using SharpFly_Cluster.Server;
+using SharpFly_Cluster.Server.Interserver;
 
 namespace SharpFly_Cluster
 {

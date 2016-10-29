@@ -7,7 +7,7 @@
         public string Name { get; private set; }
         public string Ip { get; private set; }
 
-        public RegisterClusterRequest(IncomingPacket packet)
+        public RegisterClusterRequest(IncomingInterserverPacket packet)
         {
             AuthorizationPassword = packet.ReadString();
             Id = packet.ReadUInt();

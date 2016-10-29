@@ -13,5 +13,10 @@ namespace SharpFly_Packet_Library.Helper
         public int Enabled { get; set; } = 1;
         public uint MaxPlayerCount { get; private set; } = 0;
         public List<Channel> Channels { get; set; }
+
+        public Cluster()
+        {
+            Channels = new List<Channel>();
+        }
     }
 }

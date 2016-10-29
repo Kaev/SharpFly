@@ -1,12 +1,12 @@
-﻿using System.Net.Sockets;
+﻿using NetMQ.Sockets;
 
 namespace SharpFly_Packet_Library.Packets.Interserver.Outgoing
 {
     public class RegisterClusterRequest
     {
-        public RegisterClusterRequest(string authorizationPassword, uint id, string name, string ip, Socket socket)
+        public RegisterClusterRequest(string authorizationPassword, uint id, string name, string ip, PushSocket socket)
         {
-            OutgoingPacket packet = new OutgoingPacket(OpCodes.REGISTER_CLUSTER_REQUEST);
+            OutgoingInterserverPacket packet = new OutgoingInterserverPacket(OpCodes.REGISTER_CLUSTER_REQUEST);
             packet.Write(authorizationPassword);
             packet.Write(id);
             packet.Write(name);
