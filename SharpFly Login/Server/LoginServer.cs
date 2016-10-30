@@ -8,6 +8,7 @@ using SharpFly_Utility_Library.Configuration;
 using SharpFly_Login.Clusters;
 using SharpFly_Utility_Library.Database.LoginDatabase;
 using SharpFly_Login.Server.Interserver;
+using SharpFly_Utility_Library;
 
 namespace SharpFly_Login.Server
 {
@@ -21,22 +22,38 @@ namespace SharpFly_Login.Server
         public static ClusterManager ClusterManager;
         public static LoginDatabase LoginDatabase;
 
-        public LoginServer(int Port)
+        public LoginServer()
         {
+            Console.WriteLine("Test if port 23000 is in use...");
+            if (PortChecker.IsPortAvailable(23000))
+            {
+                Console.WriteLine("Port 23000 is already in use - You can only run one cluster on one computer");
+                return;
+            }
+
             Config = new LoginServerConfig("Resources/Config/Login.ini");
+
+            int loginPort = (int)Config.GetSetting("LoginPort");
+            Console.WriteLine("Test if port {0} is in use...", loginPort.ToString());
+            if (PortChecker.IsPortAvailable(loginPort))
+            {
+                Console.WriteLine("Port {0} is already in use - You can only run one login server on one computer", loginPort);
+                return;
+            }
+
             LoginDatabase = new LoginDatabase(Config);
             if (LoginDatabase.Connection.CheckConnection())
             {
                 Rijndael.Initiate();
 
-                this.m_ClusterConnector = new ClusterConnector();
+                this.m_ClusterConnector = new ClusterConnector(loginPort.ToString());
                 this.m_ClusterConnector.StartListening();
 
                 ClusterManager = new ClusterManager();
                 Console.WriteLine("Listening for cluster servers...");
 
                 this.m_ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this.m_ClientSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
+                this.m_ClientSocket.Bind(new IPEndPoint(IPAddress.Any, 23000));
                 this.m_ClientSocket.Listen(100);
                 ClientManager = new ClientManager();
 

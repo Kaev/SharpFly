@@ -14,7 +14,8 @@
             base.Read("ClientBuildDate", "ClientBuildDate", "Security", typeof(string));
             base.Read("ClusterAddress", "Address", "Cluster", typeof(string));
             base.Read("ClusterId", "ClusterId", "Cluster", typeof(uint));
-            base.Read("ClusterPort", "Port", "Cluster", typeof(string));
+            base.Read("LoginPort", "LoginPort", "Cluster", typeof(int));
+            base.Read("InterserverPort", "InterserverPort", "Cluster", typeof(int));
         }
     }
 }

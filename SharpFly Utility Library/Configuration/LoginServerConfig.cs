@@ -12,6 +12,7 @@
             base.Read("Md5Salt", "Md5Salt", "Security", typeof(string));
             base.Read("ClientBuildDate", "ClientBuildDate", "Security", typeof(string));
             base.Read("LoginAddress", "Address", "Login", typeof(string));
+            base.Read("LoginPort", "LoginPort", "Login", typeof(int));
         }
     }
 }

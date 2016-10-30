@@ -15,11 +15,10 @@ namespace SharpFly_Cluster.Server.Interserver
         public PublisherSocket PublisherSocket { get; private set; }
         public PullSocket ServerSocket { get; set; }
 
-        public LoginConnector(string receivePort)
+        public LoginConnector(string publisherPort, string receivePort)
         {
+            PublisherSocket = new PublisherSocket(String.Format(">tcp://{0}:{1}", ClusterServer.Config.GetSetting("ClusterAddress"), publisherPort));
             ServerSocket = new PullSocket(String.Format("@tcp://{0}:{1}", ClusterServer.Config.GetSetting("ClusterAddress"), receivePort));
-            PublisherSocket = new PublisherSocket(String.Format("@tcp://{0}:1234", ClusterServer.Config.GetSetting("ClusterAddress")));
-            PublisherSocket.SendMoreFrame("SharpFlyLogin").SendFrame("test");
         }
 
         public void Dispose()

@@ -57,6 +57,7 @@
     <Compile Include="Database\MySQLConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Configuration\IniFile.cs" />
+    <Compile Include="PortChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

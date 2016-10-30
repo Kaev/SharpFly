@@ -11,9 +11,9 @@ namespace SharpFly_Login.Server.Interserver
     {
         SubscriberSocket _SubscriberSocket { get; set; }
 
-        public ClusterConnector()
+        public ClusterConnector(string subscriberPort)
         {
-            _SubscriberSocket = new SubscriberSocket(String.Format(">tcp://{0}:1234", LoginServer.Config.GetSetting("LoginAddress")));
+            _SubscriberSocket = new SubscriberSocket(String.Format("@tcp://{0}:{1}", LoginServer.Config.GetSetting("LoginAddress"), subscriberPort));
             _SubscriberSocket.Subscribe("SharpFlyLogin");
         }
 

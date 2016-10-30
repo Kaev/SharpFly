@@ -18,7 +18,7 @@ namespace SharpFly_Login
             m_Handler = new ConsoleEventDelegate(ConsoleEventCallback);
             SetConsoleCtrlHandler(m_Handler, true);
 
-            LoginServer = new LoginServer(23000);
+            LoginServer = new LoginServer();
             Console.ReadLine();
             LoginServer.Dispose();
         }
