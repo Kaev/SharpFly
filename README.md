@@ -10,4 +10,5 @@ CS: Cluster server<br>
 WS: World server<br>
 PL: Packet library<br>
 UL: Utility library<br>
+DB: Database<br>
 <br>
