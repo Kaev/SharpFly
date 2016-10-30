@@ -54,7 +54,7 @@ namespace SharpFly_Login.Clusters
             cluster.ClientSocket = new PushSocket(String.Format(">tcp://{0}:{1}", LoginServer.Config.GetSetting("LoginAddress"), request.SendPort));
             cluster.ClusterData = new SharpFly_Packet_Library.Helper.Cluster();
             cluster.ClusterData.Id = request.ClusterId;
-            cluster.ClusterData.Name = request.Name;
+            cluster.ClusterData.Name = clusterTable.Name;
             cluster.ClusterData.Ip = request.Ip;
 
             if (clusterTable == null)

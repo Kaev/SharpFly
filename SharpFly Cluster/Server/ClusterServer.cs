@@ -38,7 +38,7 @@ namespace SharpFly_Cluster.Server
 
                 // Let's wait a bit to let the subscriber and publisher socket to connect
                 Thread.Sleep(500);
-                RegisterClusterRequest request = new RegisterClusterRequest((uint)Config.GetSetting("ClusterId"), (string)Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Cluster", (string)Config.GetSetting("ClusterAddress"), receivePort, LoginConnector.PublisherSocket);
+                RegisterClusterRequest request = new RegisterClusterRequest((uint)Config.GetSetting("ClusterId"), (string)Config.GetSetting("ClusterAuthorizationPassword"), (string)Config.GetSetting("ClusterAddress"), receivePort, LoginConnector.PublisherSocket);
 
                 LoginConnector.OnClusterRequestSuccesful += new LoginConnector.RequestSuccesfulHandler(OnRegisterClusterRequestSuccesful);
             }
