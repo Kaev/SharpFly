@@ -4,13 +4,14 @@ namespace SharpFly_Packet_Library.Packets.Interserver.Outgoing
 {
     public class RegisterClusterRequest
     {
-        public RegisterClusterRequest(string authorizationPassword, uint id, string name, string ip, PushSocket socket)
+        public RegisterClusterRequest(uint clusterId, string authorizationPassword, string name, string ip, string sendPort, PublisherSocket socket)
         {
             OutgoingInterserverPacket packet = new OutgoingInterserverPacket(OpCodes.REGISTER_CLUSTER_REQUEST);
+            packet.Write(clusterId);
             packet.Write(authorizationPassword);
-            packet.Write(id);
             packet.Write(name);
             packet.Write(ip);
+            packet.Write(sendPort);
             packet.Send(socket);
         }
     }

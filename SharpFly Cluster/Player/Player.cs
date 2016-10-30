@@ -113,8 +113,7 @@ namespace SharpFly_Cluster.Player
         public void Dispose()
         {
             ClusterServer.PlayerManager.RemovePlayer(this);
-            this.Socket.Shutdown(SocketShutdown.Both);
-            this.Socket.Close();
+            this.Socket.Dispose();
         }
 
         #region Incoming packets
@@ -187,7 +186,7 @@ namespace SharpFly_Cluster.Player
 
         public void SendServerIp()
         {
-            new ServerIp(ClusterServer.IpAddress, this.Socket);
+            new ServerIp((string)ClusterServer.Config.GetSetting("ClusterAddress"), this.Socket);
         }
 
         public void SendCharacterList(uint TimeGetTime)

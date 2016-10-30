@@ -13,11 +13,11 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Tables
 
         public Account(DataRow row)
         {
-            Id = (int)row["Id"];
-            Accountname = (string)row["Accountname"];
-            Password = (string)row["Password"];
-            Banned = Convert.ToBoolean(row["Banned"]);
-            Verified = Convert.ToBoolean(row["Verified"]);
+            Id = (int)row["id"];
+            Accountname = (string)row["accountname"];
+            Password = (string)row["password"];
+            Banned = Convert.ToBoolean(row["banned"]);
+            Verified = Convert.ToBoolean(row["verified"]);
         }
     }
 }

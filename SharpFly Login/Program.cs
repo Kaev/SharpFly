@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using SharpFly_Login.Server;
-using SharpFly_Login.Server.Interserver;
-using System.Threading.Tasks;
-using System.Threading;
 
 namespace SharpFly_Login
 {
@@ -30,10 +27,8 @@ namespace SharpFly_Login
         static bool ConsoleEventCallback(int eventType)
         {
             if (eventType == 2)
-            {
-                LoginServer.ClientManager.Dispose();
-                LoginServer.ClusterManager.Dispose();
-            }
+                LoginServer.Dispose();
+                
             return false;
         }
     }

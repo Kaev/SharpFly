@@ -1,4 +1,6 @@
 ﻿using SharpFly_Utility_Library.Configuration;
+using SharpFly_Utility_Library.Database.LoginDatabase.Tables;
+using System.Collections.Generic;
 
 namespace SharpFly_Utility_Library.Database.ClusterDatabase
 {

@@ -106,8 +106,7 @@ namespace SharpFly_Login.Clients
         public void Dispose()
         {
             LoginServer.ClientManager.RemoveUser(this);
-            this.Socket.Shutdown(SocketShutdown.Both);
-            this.Socket.Close();
+            this.Socket.Dispose();
         }
 
         #region Incoming packets

@@ -53,10 +53,14 @@
     <Compile Include="Packets\IncomingInterserverPacket.cs" />
     <Compile Include="Packets\Interserver\Incoming\OpCodes.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterClusterRequest.cs" />
+    <Compile Include="Packets\Interserver\Incoming\RegisterClusterSuccesful.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterNewChannelRequest.cs" />
+    <Compile Include="Packets\Interserver\Incoming\RegisterNewChannelSuccesful.cs" />
     <Compile Include="Packets\Interserver\Outgoing\OpCodes.cs" />
     <Compile Include="Packets\Interserver\Outgoing\RegisterClusterRequest.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\RegisterClusterSuccesful.cs" />
     <Compile Include="Packets\Interserver\Outgoing\RegisterNewChannelRequest.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\RegisterNewChannelSuccesful.cs" />
     <Compile Include="Packets\LoginServer\Incoming\LoginRequest.cs" />
     <Compile Include="Packets\IncomingPacket.cs" />
     <Compile Include="Packets\LoginServer\Incoming\OpCodes.cs" />

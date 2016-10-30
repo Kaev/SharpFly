@@ -31,7 +31,7 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Queries
         public void Initialize(Database db)
         {
             m_Query_GetAllClusters = new PreparedStatement(db, "SELECT * FROM clusters");
-            m_Query_GetSingleCluster = new PreparedStatement(db, "SELECT * FROM clusters WHERE Id=@id", new MySqlParameter("@id", MySqlDbType.Int32));
+            m_Query_GetSingleCluster = new PreparedStatement(db, "SELECT * FROM clusters WHERE id=@id", new MySqlParameter("@id", MySqlDbType.Int32));
         }
 
         public List<Tables.Cluster> GetAllClusters()
@@ -43,7 +43,7 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Queries
             return clusterList;
         }
 
-        public Tables.Cluster GetCluster(int id)
+        public Tables.Cluster GetCluster(uint id)
         {
             DataTable dt = m_Query_GetSingleCluster.Process(id);
             if (dt.Rows.Count > 0)

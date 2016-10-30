@@ -18,13 +18,11 @@ namespace SharpFly_Cluster.Server
 
         public static LoginConnector LoginConnector;
         public static Config Config { get; private set; }
-        public static string IpAddress { get; private set; } = "127.0.0.1";
         public static LoginDatabase LoginDatabase;
-        //public static LoginServerConnector LoginServerConnector;
         public static PlayerManager PlayerManager;
         public static ClusterDatabase ClusterDatabase;
 
-        public ClusterServer(int Port)
+        public ClusterServer()
         {
             Rijndael.Initiate();
             Config = new ClusterServerConfig("Resources/Config/Cluster.ini");
@@ -33,14 +31,40 @@ namespace SharpFly_Cluster.Server
             if (ClusterDatabase.Connection.CheckConnection() && LoginDatabase.Connection.CheckConnection())
             {
                 Console.WriteLine("Connecting to login server...");
-                LoginConnector = new LoginConnector();
 
-                RegisterClusterRequest request = new RegisterClusterRequest((string)ClusterServer.Config.GetSetting("ClusterAuthorizationPassword"), 0, "SharpFly Cluster", "127.0.0.1", LoginConnector.Socket);
-                
-                // if succesful...
+                string receivePort = (string)Config.GetSetting("ClusterPort");
+                LoginConnector = new LoginConnector(receivePort);
+                LoginConnector.StartListening();
+
+                // Let's wait a bit to let the subscriber and publisher socket to connect
+                Thread.Sleep(500);
+                RegisterClusterRequest request = new RegisterClusterRequest((uint)Config.GetSetting("ClusterId"), (string)Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Cluster", (string)Config.GetSetting("ClusterAddress"), receivePort, LoginConnector.PublisherSocket);
+
+                LoginConnector.OnClusterRequestSuccesful += new LoginConnector.RequestSuccesfulHandler(OnRegisterClusterRequestSuccesful);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (PlayerManager != null)
+                PlayerManager.Dispose();
+            if (LoginConnector != null)
+                LoginConnector.Dispose();
+            if (this.m_PlayerSocket != null)
+                this.m_PlayerSocket.Dispose();
+        }
+
+        public void OnRegisterClusterRequestSuccesful(RequestSuccesfulEventArgs args)
+        {
+            LoginConnector.OnClusterRequestSuccesful -= OnRegisterClusterRequestSuccesful;
+
+            if (args.Accepted)
+            {
+                RegisterNewChannelRequest newChannelRequest = new RegisterNewChannelRequest(args.Id, (string)Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Channel", 0, 50, LoginConnector.PublisherSocket);
+                LoginConnector.OnNewChannelRequestSuccesful += new LoginConnector.RequestSuccesfulHandler(OnRegisterNewChannelSuccesful);
 
                 this.m_PlayerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                this.m_PlayerSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
+                this.m_PlayerSocket.Bind(new IPEndPoint(IPAddress.Any, 28000));
                 this.m_PlayerSocket.Listen(100);
 
                 PlayerManager = new PlayerManager();
@@ -51,18 +75,18 @@ namespace SharpFly_Cluster.Server
                 Thread processPlayerThread = new Thread(() => PlayerManager.ProcessPlayers());
                 processPlayerThread.Start();
 
-                RegisterNewChannelRequest newChannelRequest = new RegisterNewChannelRequest((string)ClusterServer.Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Channel", 0, 0, 50, LoginConnector.Socket);
-
-                // if succesful...
-
-                Console.WriteLine("Cluster and channel connected!");
+                Console.WriteLine("Cluster request succesful!");
             }
+            else
+                Console.WriteLine("Cluster request wasn't succesful!");
         }
 
-        public void Dispose()
+        public void OnRegisterNewChannelSuccesful(RequestSuccesfulEventArgs args)
         {
-            this.m_PlayerSocket.Shutdown(SocketShutdown.Both);
-            this.m_PlayerSocket.Close();
+            if (args.Accepted)
+            {
+                Console.WriteLine("New channel request succesful!");
+            }
         }
     }
 }

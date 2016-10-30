@@ -29,7 +29,7 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Queries
         public void Initialize(Database db)
         {
             m_Query_GetAllAccounts = new PreparedStatement(db, "SELECT * FROM accounts");
-            m_Query_GetSingleAccount = new PreparedStatement(db, "SELECT * FROM accounts WHERE Accountname=@accountname", new MySqlParameter("@accountname", MySqlDbType.VarChar));
+            m_Query_GetSingleAccount = new PreparedStatement(db, "SELECT * FROM accounts WHERE accountname=@accountname", new MySqlParameter("@accountname", MySqlDbType.VarChar));
         }
 
         public List<Tables.Account> GetAllAccounts()

@@ -69,6 +69,7 @@
     <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\Interserver\RequestSuccesfulEventArgs.cs" />
     <Compile Include="Server\Interserver\LoginConnector.cs" />
     <Compile Include="Server\ClusterServer.cs" />
   </ItemGroup>

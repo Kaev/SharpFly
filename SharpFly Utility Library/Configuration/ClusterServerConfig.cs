@@ -11,8 +11,10 @@
             base.Read("MySQLDatabaseCluster", "DatabaseCluster", "MySQL", typeof(string));
             base.Read("MySQLPort", "Port", "MySQL", typeof(int));
             base.Read("ClusterAuthorizationPassword", "ClusterAuthorizationPassword", "Security", typeof(string));
-            base.Read("Md5Salt", "Md5Salt", "Security", typeof(string));
             base.Read("ClientBuildDate", "ClientBuildDate", "Security", typeof(string));
+            base.Read("ClusterAddress", "Address", "Cluster", typeof(string));
+            base.Read("ClusterId", "ClusterId", "Cluster", typeof(uint));
+            base.Read("ClusterPort", "Port", "Cluster", typeof(string));
         }
     }
 }

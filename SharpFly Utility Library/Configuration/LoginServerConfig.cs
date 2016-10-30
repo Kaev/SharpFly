@@ -9,9 +9,9 @@
             base.Read("MySQLPassword", "Password", "MySQL", typeof(string));
             base.Read("MySQLDatabaseLogin", "DatabaseLogin", "MySQL", typeof(string));
             base.Read("MySQLPort", "Port", "MySQL", typeof(int));
-            base.Read("ClusterAuthorizationPassword", "ClusterAuthorizationPassword", "Security", typeof(string));
             base.Read("Md5Salt", "Md5Salt", "Security", typeof(string));
             base.Read("ClientBuildDate", "ClientBuildDate", "Security", typeof(string));
+            base.Read("LoginAddress", "Address", "Login", typeof(string));
         }
     }
 }

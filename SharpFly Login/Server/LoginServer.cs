@@ -31,6 +31,7 @@ namespace SharpFly_Login.Server
 
                 this.m_ClusterConnector = new ClusterConnector();
                 this.m_ClusterConnector.StartListening();
+
                 ClusterManager = new ClusterManager();
                 Console.WriteLine("Listening for cluster servers...");
 
@@ -51,9 +52,14 @@ namespace SharpFly_Login.Server
 
         public void Dispose()
         {
-            this.m_ClusterConnector.Dispose();
-            this.m_ClientSocket.Shutdown(SocketShutdown.Both);
-            this.m_ClientSocket.Close();
+            if (ClientManager != null)
+                ClientManager.Dispose();
+            if (ClusterManager != null)
+                ClusterManager.Dispose();
+            if (this.m_ClusterConnector != null)
+                this.m_ClusterConnector.Dispose();
+            if (this.m_ClientSocket != null)
+                this.m_ClientSocket.Dispose();
         }
     }
 }
