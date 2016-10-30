@@ -27,6 +27,10 @@ namespace SharpFly_Login.Clusters
             lock (m_ListLock)
             {
                 m_Clusters.Add(cluster);
+
+                // Just to be sure the ID between channels and clusters is unique.. will probably change that later
+                if (cluster.ClusterData.Id >= Id)
+                    Id += cluster.ClusterData.Id * 100 + 1;
             }
         }
 
