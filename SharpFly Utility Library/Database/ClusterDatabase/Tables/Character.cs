@@ -32,19 +32,12 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
         public int PvPPoints { get; set; }
         public int PKPoints { get; set; }
         public int GuildId { get; set; }
-        public int Bank0Penya { get; set; }
-        public int Bank1Penya { get; set; }
-        public int Bank2Penya { get; set; }
-        public string BankPassword { get; set; }
         public int Bag1TimeLeft { get; set; }
         public int Bag2TimeLeft { get; set; }
         public int MsgState { get; set; }
         public int MotionFlags { get; set; }
         public int MovementFlags { get; set; }
         public int PlayerFlags { get; set; }
-        public string ActionSlotSkillId { get; set; }
-        public string ActionSlotOption { get; set; }
-        public int ActionBarProgress { get; set; }
 
         public Character(DataRow row)
         {
@@ -75,19 +68,12 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
             PvPPoints = (int)row["pvpPoints"];
             PKPoints = (int)row["pkPoints"];
             GuildId = (int)row["guildId"];
-            Bank0Penya = (int)row["bank0Penya"];
-            Bank1Penya = (int)row["bank1Penya"];
-            Bank2Penya = (int)row["bank2Penya"];
-            BankPassword = (string)row["bankPassword"];
             Bag1TimeLeft = (int)row["bag1TimeLeft"];
             Bag2TimeLeft = (int)row["bag2TimeLeft"];
             MsgState = (int)row["msgState"];
             MotionFlags = (int)row["motionFlags"];
             MovementFlags = (int)row["movementFlags"];
             PlayerFlags = (int)row["playerFlags"];
-            ActionSlotSkillId = (string)row["actionSlotSkillId"];
-            ActionSlotOption = (string)row["actionSlotOption"];
-            ActionBarProgress = (int)row["actionBarProgress"];
         }
     }
 }

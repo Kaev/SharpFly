@@ -49,6 +49,9 @@
     <Compile Include="Configuration\ClusterServerConfig.cs" />
     <Compile Include="Database\ClusterDatabase\Queries\Character.cs" />
     <Compile Include="Database\ClusterDatabase\Tables\Character.cs" />
+    <Compile Include="Database\ClusterDatabase\Tables\CharacterActionBar.cs" />
+    <Compile Include="Database\ClusterDatabase\Tables\CharacterBank.cs" />
+    <Compile Include="Database\ClusterDatabase\Tables\CharacterSlot.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\LoginDatabase\LoginDatabase.cs" />
     <Compile Include="Database\LoginDatabase\Queries\Account.cs" />

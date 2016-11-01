@@ -26,8 +26,8 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
 
         public void Initialize(Database db)
         {
-            m_Query_GetAllCharacters = new PreparedStatement(db, "SELECT * FROM characters");
-            m_Query_GetSingleCharacter = new PreparedStatement(db, "SELECT * FROM characters WHERE characterId=@characterId", new MySqlParameter("@characterId", MySqlDbType.Int32));
+            m_Query_GetAllCharacters = new PreparedStatement(db, "SELECT * FROM character");
+            m_Query_GetSingleCharacter = new PreparedStatement(db, "SELECT * FROM character WHERE characterId=@characterId", new MySqlParameter("@characterId", MySqlDbType.Int32));
         }
 
         public List<Tables.Character> GetAllCharacters()
