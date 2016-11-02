@@ -6,6 +6,8 @@ namespace SharpFly_Packet_Library.Packets.ClusterServer.Outgoing
     {
         public CharacterList(uint TimeGetTime, Socket socket)
         {
+            // not finished
+
             OutgoingPacket packet = new OutgoingPacket(OpCodes.CHARACTER_LIST);
             packet.Write(TimeGetTime);
 

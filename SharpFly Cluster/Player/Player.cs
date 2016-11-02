@@ -89,13 +89,13 @@ namespace SharpFly_Cluster.Player
                             OnPing(packet);
                             break;
                         case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.CHARACTER_LIST:
-                            CharacterListRequest(packet);
+                            OnCharacterListRequest(packet);
                             break;
                         case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.DELETE_CHARACTER:
                             Console.WriteLine("Delete character packet");
                             break;
                         case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.CREATE_CHARACTER:
-                            Console.WriteLine("Create character packet");
+                            OnCreateCharacter(packet);
                             break;
                         case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.WORLD_TRANSFER:
                             Console.WriteLine("World transfer packet");
@@ -123,7 +123,7 @@ namespace SharpFly_Cluster.Player
             SendQueryTickCount(request.Time);
         }
 
-        public void CharacterListRequest(IncomingPacket packet)
+        public void OnCharacterListRequest(IncomingPacket packet)
         {
             CharacterListRequest request = new CharacterListRequest(packet);
 
@@ -170,6 +170,12 @@ namespace SharpFly_Cluster.Player
 
             SendServerIp();
             SendCharacterList(request.TimeGetTime);
+        }
+
+        public void OnCreateCharacter(IncomingPacket packet)
+        {
+            CreateCharacter request = new CreateCharacter(packet);
+            SendCharacterList(0);
         }
 
         public void OnPing(IncomingPacket packet)
