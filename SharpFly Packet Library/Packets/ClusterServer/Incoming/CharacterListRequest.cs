@@ -14,7 +14,6 @@
             BuildDate = packet.ReadString();
             TimeGetTime = packet.ReadUInt();
             Username = packet.ReadString();
-            //Password = packet.ReadBytes(16 * 42); // PasswordSize
             Password = packet.ReadString();
             ServerId = packet.ReadUInt();
         }
