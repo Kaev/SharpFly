@@ -83,6 +83,9 @@
     <Compile Include="Packets\ClusterServer\Outgoing\Pong.cs" />
     <Compile Include="Packets\ClusterServer\Outgoing\QueryTickCount.cs" />
     <Compile Include="Packets\ClusterServer\Outgoing\ServerIp.cs" />
+    <Compile Include="Packets\WorldServer\Incoming\OpCodes.cs" />
+    <Compile Include="Packets\WorldServer\Incoming\PartyName.cs" />
+    <Compile Include="Packets\WorldServer\Outgoing\OpCodes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Crc32.cs" />
     <Compile Include="Security\MD5.cs" />
