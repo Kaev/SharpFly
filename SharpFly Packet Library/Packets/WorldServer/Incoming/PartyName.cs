@@ -2,8 +2,8 @@
 {
     class PartyName
     {
-        public ulong Size { get; private set; }         
-        public ulong PlayerID { get; private set; }     
+        public uint Size { get; private set; }         
+        public uint PlayerID { get; private set; }     
         public char[] partyName { get; private set; }   
 
         public PartyName(IncomingPacket packet)
