@@ -1,6 +1,6 @@
 ﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    class PartyChangeMode
+    public class PartyChangeMode
     {
         public uint PlayerID;
         public bool SendName;
