@@ -4,7 +4,7 @@
     {
         public uint PlayerID;
         public bool SendName;
-        public char[] PartyName;
+        public string PartyName;
 
         /// <summary>
         /// Gets called when changing Party from normal to ADV (party level = 10) --> When name is being changed.
@@ -13,7 +13,7 @@
         {
             PlayerID = packet.ReadUInt();                       
             SendName = packet.ReadBool();
-            PartyName = packet.ReadString().ToCharArray();
+            PartyName = packet.ReadString();
         }
     }
 }
