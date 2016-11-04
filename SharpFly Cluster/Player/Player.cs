@@ -7,6 +7,7 @@ using SharpFly_Cluster.Server;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using SharpFly_Utility_Library.Sockets;
 
 namespace SharpFly_Cluster.Player
 {
@@ -22,6 +23,7 @@ namespace SharpFly_Cluster.Player
         #endregion
 
         #region "Account attributes"
+        public bool Authenticated { get; set; } = false;
         public string Username { get; set; }
         public uint SessionKey { get; set; }
         #endregion
@@ -40,22 +42,27 @@ namespace SharpFly_Cluster.Player
 
         public void ProcessData()
         {
-            try
+            if (!SocketChecker.IsSocketConnected(this.Socket))
             {
-                if (this.Socket != null)
-                {
-                    if (this.Socket.Available <= 0)
-                        return;
-
-                    int byteCount = this.Socket.Receive(this.Buffer, this.Buffer.Length, SocketFlags.None);
-                    if (byteCount <= 0)
-                        return;
-                    ReceivedBytes.AddRange(this.Buffer);
-                }
+                this.Dispose();
+                return;
             }
-            catch (Exception ex)
+
+            if (this.Socket != null)
             {
-                Console.WriteLine(ex.Message);
+                if (!this.Socket.Connected)
+                {
+                    this.Dispose();
+                    return;
+                }
+
+                if (this.Socket.Available <= 0)
+                    return;
+
+                int byteCount = this.Socket.Receive(this.Buffer, this.Buffer.Length, SocketFlags.None);
+                if (byteCount <= 0)
+                    return;
+                ReceivedBytes.AddRange(this.Buffer);
             }
 
             byte[] data = ReceivedBytes.ToArray();
@@ -84,6 +91,9 @@ namespace SharpFly_Cluster.Player
                     {
                         case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.QUERY_TICK_COUNT:
                             OnQueryTickCount(packet);
+                            break;
+                        case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.AUTH_QUERY:
+                            OnAuthQuery(packet);
                             break;
                         case SharpFly_Packet_Library.Packets.ClusterServer.Incoming.OpCodes.PING:
                             OnPing(packet);
@@ -120,12 +130,25 @@ namespace SharpFly_Cluster.Player
         public void OnQueryTickCount(IncomingPacket packet)
         {
             SharpFly_Packet_Library.Packets.ClusterServer.Incoming.QueryTickCount request = new SharpFly_Packet_Library.Packets.ClusterServer.Incoming.QueryTickCount(packet);
-            SendQueryTickCount(request.Time);
+            SendAuthQuery(0, 0, 0, 0);
+        }
+
+        public void OnAuthQuery(IncomingPacket packet)
+        {
+            SharpFly_Packet_Library.Packets.ClusterServer.Incoming.AuthQuery request = new SharpFly_Packet_Library.Packets.ClusterServer.Incoming.AuthQuery(packet);
+            if (!Authenticated)
+                SendPong(1); // not sure, doesn't happened yet tho
+            else
+                SendAuthQuery(0, 0, 0, 0);
         }
 
         public void OnCharacterListRequest(IncomingPacket packet)
         {
             CharacterListRequest request = new CharacterListRequest(packet);
+
+            // Don't go back to character list, when you're already in there
+            if (Authenticated)
+                return;
 
             if (request.BuildDate != (string)ClusterServer.Config.GetSetting("ClientBuildDate"))
             {
@@ -168,6 +191,7 @@ namespace SharpFly_Cluster.Player
                 return;
             }
 
+            Authenticated = true;
             SendServerIp();
             SendCharacterList(request.TimeGetTime);
         }
@@ -175,19 +199,27 @@ namespace SharpFly_Cluster.Player
         public void OnCreateCharacter(IncomingPacket packet)
         {
             CreateCharacter request = new CreateCharacter(packet);
-            SendCharacterList(0);
+            SendCharacterList((uint)DateTime.Now.Ticks);
         }
 
         public void OnPing(IncomingPacket packet)
         {
             Ping request = new Ping(packet);
-            SendPong(request.Time);
+            if (Authenticated)
+                SendPong(request.Time);
+            else
+                SendQueryTickCount((uint)DateTime.Now.Ticks);
         }
         #endregion
         #region Outgoing packets
         public void SendSessionKey()
         {
             new SessionKey((int)this.SessionKey, this.Socket);
+        }
+
+        public void SendAuthQuery(int value1, int value2, int value3, int value4)
+        {
+            new SharpFly_Packet_Library.Packets.ClusterServer.Outgoing.AuthQuery(value1, value2, value3, value4, this.Socket);
         }
 
         public void SendServerIp()
@@ -200,12 +232,12 @@ namespace SharpFly_Cluster.Player
             new CharacterList(TimeGetTime, this.Socket);
         }
 
-        public void SendQueryTickCount(int time)
+        public void SendQueryTickCount(uint time)
         {
             new SharpFly_Packet_Library.Packets.ClusterServer.Outgoing.QueryTickCount(time, this.Socket);
         }
 
-        public void SendPong(int time)
+        public void SendPong(uint time)
         {
             new Pong(time, this.Socket);
         }

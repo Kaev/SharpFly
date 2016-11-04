@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 
-namespace SharpFly_Utility_Library
+namespace SharpFly_Utility_Library.Ports
 {
     public static class PortChecker
     {

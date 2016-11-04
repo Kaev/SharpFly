@@ -6,6 +6,7 @@ namespace SharpFly_Login.Clients
 {
     public class ClientManager : IDisposable
     {
+        private Client[] m_ClientsProcessing;
         private List<Client> m_Clients;
         private object m_ListLock;
 
@@ -21,6 +22,7 @@ namespace SharpFly_Login.Clients
                 lock (m_ListLock)
                 {
                     m_Clients.Add(new Client(socket.Accept()));
+                    m_ClientsProcessing = m_Clients.ToArray();
                 }
         }
 
@@ -35,13 +37,10 @@ namespace SharpFly_Login.Clients
         {
             while (true)
             {
-                lock (m_ListLock)
-                {
-                    Client[] clients = m_Clients.ToArray();
-                    for (int i = 0; i < clients.Length; i++)
-                        if (clients[i] != null)
-                            clients[i].ProcessData();
-                }
+                if (m_ClientsProcessing != null)
+                    for (int i = 0; i < m_ClientsProcessing.Length; i++)
+                        if (m_ClientsProcessing[i] != null)
+                            m_ClientsProcessing[i].ProcessData();
             }
         }
 
@@ -51,6 +50,7 @@ namespace SharpFly_Login.Clients
             {
                 if (m_Clients.Contains(client))
                     m_Clients.Remove(client);
+                m_ClientsProcessing = m_Clients.ToArray();
             }
         }
 

@@ -9,8 +9,7 @@ using System.Net.Sockets;
 using System.Threading;
 using SharpFly_Cluster.Server.Interserver;
 using SharpFly_Packet_Library.Packets.Interserver.Outgoing;
-using System.Net.NetworkInformation;
-using SharpFly_Utility_Library;
+using SharpFly_Utility_Library.Ports;
 
 namespace SharpFly_Cluster.Server
 {
@@ -29,7 +28,7 @@ namespace SharpFly_Cluster.Server
             Console.WriteLine("Test if port 28000 is in use...");
             if (PortChecker.IsPortAvailable(28000))
             {
-                Console.WriteLine("Port 28000 is already in use - You can only run one login server on one computer");
+                Console.WriteLine("Port 28000 is already in use - You can only run one cluster server on one computer");
                 return;
             }
 
@@ -38,18 +37,12 @@ namespace SharpFly_Cluster.Server
             Config = new ClusterServerConfig("Resources/Config/Cluster.ini");
 
             int loginPort = (int)Config.GetSetting("LoginPort");
-            Console.WriteLine("Test if port {0} is in use...", loginPort.ToString());
-            if (PortChecker.IsPortAvailable(loginPort))
-            {
-                Console.WriteLine("Port {0} is already in use - You can only run one login server on one computer", loginPort);
-                return;
-            }
 
             int receivePort = (int)Config.GetSetting("InterserverPort");
             Console.WriteLine("Search open port for interserver connection...");
             while (PortChecker.IsPortAvailable(receivePort))
             {
-                Console.WriteLine("Port {0} not available", receivePort.ToString());
+                Console.WriteLine("Port {0} not available, let's try another port", receivePort.ToString());
                 receivePort += 1;
             }
 

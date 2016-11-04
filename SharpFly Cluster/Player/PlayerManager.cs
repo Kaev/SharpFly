@@ -6,6 +6,7 @@ namespace SharpFly_Cluster.Player
 {
     public class PlayerManager : IDisposable
     {
+        private Player[] m_PlayerProcessing;
         private List<Player> m_Players;
         private object m_ListLock;
 
@@ -21,6 +22,7 @@ namespace SharpFly_Cluster.Player
                 lock (m_ListLock)
                 {
                     m_Players.Add(new Player(socket.Accept()));
+                    m_PlayerProcessing = m_Players.ToArray();
                 }
         }
 
@@ -35,13 +37,10 @@ namespace SharpFly_Cluster.Player
         {
             while (true)
             {
-                lock (m_ListLock)
-                {
-                    Player[] players = m_Players.ToArray();
-                    for (int i = 0; i < players.Length; i++)
-                        if (players[i] != null)
-                            players[i].ProcessData();
-                }
+                if (m_PlayerProcessing != null)
+                    for (int i = 0; i < m_PlayerProcessing.Length; i++)
+                        if (m_PlayerProcessing[i] != null)
+                            m_PlayerProcessing[i].ProcessData();
             }
         }
 
@@ -51,6 +50,7 @@ namespace SharpFly_Cluster.Player
             {
                 if (m_Players.Contains(player))
                     m_Players.Remove(player);
+                m_PlayerProcessing = m_Players.ToArray();
             }
         }
     }

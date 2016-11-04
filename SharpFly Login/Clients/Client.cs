@@ -8,6 +8,7 @@ using SharpFly_Packet_Library.Packets.LoginServer.Incoming;
 using SharpFly_Packet_Library.Packets.LoginServer.Outgoing;
 using SharpFly_Packet_Library.Security;
 using SharpFly_Utility_Library.Database.LoginDatabase.Tables;
+using SharpFly_Utility_Library.Sockets;
 
 namespace SharpFly_Login.Clients
 {
@@ -34,29 +35,35 @@ namespace SharpFly_Login.Clients
             this.Buffer = new byte[BufferSize];
             ReceivedBytes = new List<byte>();
             this.Socket = socket;
-            this.SessionKey = 82247; //(uint)new Random().Next(0, ushort.MaxValue * 5);
+            this.SessionKey = (uint)new Random().Next(0, ushort.MaxValue * 5);
             Console.WriteLine("Client " + this.Socket.RemoteEndPoint + " connected!");
             SendSessionKey();
         }
 
         public void ProcessData()
         {
-            try
+            if (!SocketChecker.IsSocketConnected(this.Socket))
             {
-                if (this.Socket != null)
-                {
-                    if (this.Socket.Available <= 0)
-                        return;
-
-                    int byteCount = this.Socket.Receive(this.Buffer, this.Buffer.Length, SocketFlags.None);
-                    if (byteCount <= 0)
-                        return;
-                    ReceivedBytes.AddRange(this.Buffer);
-                }
+                this.Dispose();
+                return;
             }
-            catch (Exception ex)
+
+            if (this.Socket != null)
             {
-                Console.WriteLine(ex.Message);
+                if (!this.Socket.Connected)
+                {
+                    this.Dispose();
+                    return;
+                }
+                    
+
+                if (this.Socket.Available <= 0)
+                    return;
+
+                int byteCount = this.Socket.Receive(this.Buffer, this.Buffer.Length, SocketFlags.None);
+                if (byteCount <= 0)
+                    return;
+                ReceivedBytes.AddRange(this.Buffer);
             }
 
             byte[] data = ReceivedBytes.ToArray();
