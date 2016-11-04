@@ -15,11 +15,11 @@ namespace SharpFly_Packet_Library.Packets.ClusterServer.Incoming
         public byte Face { get; private set; }
         public byte Costume { get; private set; } // Unused
         public byte Skinset { get; private set; } // Unused
-        public byte HairStyle { get; private set; }
+        public byte HairMesh { get; private set; }
         public uint HairColor { get; private set; }
         public byte Gender { get; private set; }
-        public byte Class { get; private set; } // Should always be 0
-        public byte HeadMesh { get; private set; }
+        public byte Class { get; private set; } 
+        public byte HeadMesh { get; private set; } // Should always be 0
         public int BankPw { get; private set; }
         public int AuthKey { get; private set; }
 
@@ -32,14 +32,14 @@ namespace SharpFly_Packet_Library.Packets.ClusterServer.Incoming
             Face = packet.ReadByte();
             Costume = packet.ReadByte();
             Skinset = packet.ReadByte();
-            HairStyle = packet.ReadByte();
+            HairMesh = packet.ReadByte();
             HairColor = packet.ReadUInt();
             Gender = packet.ReadByte();
             Class = packet.ReadByte();
             HeadMesh = packet.ReadByte();
             BankPw = packet.ReadInt();
             AuthKey = packet.ReadInt();
+            int a = 1;
         }
-
     }
 }

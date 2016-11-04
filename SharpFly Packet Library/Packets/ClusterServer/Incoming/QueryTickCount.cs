@@ -2,11 +2,11 @@
 {
     public class QueryTickCount
     {
-        public int Time { get; private set; }
+        public uint Time { get; private set; }
 
         public QueryTickCount(IncomingPacket packet)
         {
-            Time = packet.ReadInt();
+            Time = packet.ReadUInt();
         }
     }
 }

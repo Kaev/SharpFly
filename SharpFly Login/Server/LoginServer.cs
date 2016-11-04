@@ -8,7 +8,7 @@ using SharpFly_Utility_Library.Configuration;
 using SharpFly_Login.Clusters;
 using SharpFly_Utility_Library.Database.LoginDatabase;
 using SharpFly_Login.Server.Interserver;
-using SharpFly_Utility_Library;
+using SharpFly_Utility_Library.Ports;
 
 namespace SharpFly_Login.Server
 {
@@ -27,19 +27,13 @@ namespace SharpFly_Login.Server
             Console.WriteLine("Test if port 23000 is in use...");
             if (PortChecker.IsPortAvailable(23000))
             {
-                Console.WriteLine("Port 23000 is already in use - You can only run one cluster on one computer");
+                Console.WriteLine("Port 23000 is already in use - You can only run one login server on one computer");
                 return;
             }
 
             Config = new LoginServerConfig("Resources/Config/Login.ini");
 
             int loginPort = (int)Config.GetSetting("LoginPort");
-            Console.WriteLine("Test if port {0} is in use...", loginPort.ToString());
-            if (PortChecker.IsPortAvailable(loginPort))
-            {
-                Console.WriteLine("Port {0} is already in use - You can only run one login server on one computer", loginPort);
-                return;
-            }
 
             LoginDatabase = new LoginDatabase(Config);
             if (LoginDatabase.Connection.CheckConnection())

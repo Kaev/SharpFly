@@ -3,6 +3,7 @@
     public static class OpCodes
     {
         public const uint QUERY_TICK_COUNT = 0x0B;
+        public const uint AUTH_QUERY = 0x11;
         public const uint PING = 0x14;
         public const uint CHARACTER_LIST = 0xF6;
         public const uint DELETE_CHARACTER = 0xF5;
