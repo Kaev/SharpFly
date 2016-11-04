@@ -3,7 +3,7 @@
     public class PartyChangeName
     {
         public uint PlayerID;
-        public char[] PartyName;
+        public string PartyName;
 
         /// <summary>
         /// Gets called when party name is being changed.
@@ -11,7 +11,7 @@
         public PartyChangeName(IncomingPacket packet)
         {
             PlayerID = packet.ReadUInt();
-            PartyName = packet.ReadString().ToCharArray();
+            PartyName = packet.ReadString();
         }
     }
 }
