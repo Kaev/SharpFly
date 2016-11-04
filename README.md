@@ -1,7 +1,5 @@
-<p align="center">
 ![SharpFly Logo](https://github.com/Kaev/SharpFly/raw/master/SharpFly/Images/SharpFly-Logo.png)<br>
 [![Build Status](https://travis-ci.org/Kaev/SharpFly.svg?branch=master)](https://travis-ci.org/Kaev/SharpFly)<br>
-</p>
 SharpFly is a FlyFF v15 server emulator written from scratch in C#.<br>
 <br>
 This project was created for learning purposes.<br>
