@@ -8,7 +8,7 @@
         public uint PartyID;
         public uint GuildID;
         public uint GuildWarID;
-        public uint IdOfMulti;      //ID of the channel (When using multiple chanels)?
+        public uint IdOfMulti;      //ID of the channel (When using multiple chanels)
         public byte CharacterSlot;
         public string CharacterName;
         public string AccountName;
