@@ -20,7 +20,7 @@ namespace SharpFly_Cluster.Server
         public static LoginConnector LoginConnector;
         public static Config Config { get; private set; }
         public static LoginDatabase LoginDatabase;
-        public static PlayerManager PlayerManager;
+        public static ClientManager PlayerManager;
         public static ClusterDatabase ClusterDatabase;
 
         public ClusterServer()
@@ -86,7 +86,7 @@ namespace SharpFly_Cluster.Server
                 this.m_PlayerSocket.Bind(new IPEndPoint(IPAddress.Any, 28000));
                 this.m_PlayerSocket.Listen(100);
 
-                PlayerManager = new PlayerManager();
+                PlayerManager = new ClientManager();
 
                 Thread acceptPlayerThread = new Thread(() => PlayerManager.AcceptPlayers(this.m_PlayerSocket));
                 acceptPlayerThread.Start();

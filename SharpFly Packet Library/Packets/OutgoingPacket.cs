@@ -47,6 +47,11 @@ namespace SharpFly_Packet_Library.Packets
             m_Writer.Write(value);
         }
 
+        public void Write(char value)
+        {
+            m_Writer.Write(value);
+        }
+
         public void Write(int value)
         {
             m_Writer.Write(value);
@@ -58,6 +63,11 @@ namespace SharpFly_Packet_Library.Packets
         }
 
         public void Write(float value)
+        {
+            m_Writer.Write(value);
+        }
+
+        public void Write(double value)
         {
             m_Writer.Write(value);
         }

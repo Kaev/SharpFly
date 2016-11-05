@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using SharpFly_Utility_Library.Sockets;
+using SharpFly_Utility_Library.Database.ClusterDatabase.Tables;
+using System.Linq;
 
 namespace SharpFly_Cluster.Player
 {
-    public class Player : IDisposable
+    public class Client : IDisposable
     {
 
         #region "Network related attributes"
@@ -28,9 +30,9 @@ namespace SharpFly_Cluster.Player
         public uint SessionKey { get; set; }
         #endregion
 
-        private Player() { }
+        private Client() { }
 
-        public Player(Socket socket)
+        public Client(Socket socket)
         {
             this.Buffer = new byte[BufferSize];
             ReceivedBytes = new List<byte>();
@@ -191,15 +193,80 @@ namespace SharpFly_Cluster.Player
                 return;
             }
 
+            Dictionary<CharacterSlot, Character> characters = new Dictionary<CharacterSlot, Character>();
+            List<CharacterSlot> slots = ClusterServer.ClusterDatabase.CharacterSlots.Where(slot => slot.AccountId == account.Id).ToList();
+            foreach (CharacterSlot slot in slots)
+                characters.Add(slot, ClusterServer.ClusterDatabase.Characters.Single(character => character.Value.CharacterId == slot.CharacterId).Value);
+
             Authenticated = true;
             SendServerIp();
-            SendCharacterList(request.TimeGetTime);
+            SendCharacterList(0, characters);
         }
 
         public void OnCreateCharacter(IncomingPacket packet)
         {
             CreateCharacter request = new CreateCharacter(packet);
-            SendCharacterList((uint)DateTime.Now.Ticks);
+
+            if (!ClusterServer.LoginDatabase.Accounts.ContainsKey(this.Username))
+                Dispose();
+
+            Account account = ClusterServer.LoginDatabase.Accounts[this.Username];
+
+            Character character = new Character();
+            character.CharacterId = SharpFly_Utility_Library.Database.ClusterDatabase.Queries.Character.Instance.GetNewCharacterId();
+            character.Name = request.CharacterName;
+            character.ClusterId = (uint)ClusterServer.Config.GetSetting("ClusterId");
+            character.Skinset = request.Skinset;
+            character.HairStyle = request.HairStyle;
+            character.HairColor = request.HairColor;
+            character.Face = request.Face;
+            character.Gender = request.Gender;
+            character.Strength = 15;
+            character.Stamina = 15;
+            character.Dexterity = 15;
+            character.Intelligence = 15;
+            character.SkillPoints = 0;
+            character.StatPoints = 0;
+            character.Level = 1;
+            character.Experience = 0;
+            character.Map = 1;
+            character.Position = new SharpFly_Utility_Library.Math.Vector4<float>(0, 0, 0, 0); // temp
+            character.Penya = 0;
+            character.FlyingLevel = 0;
+            character.FlyingExp = 0;
+            character.HP = 1; // temp
+            character.MP = 1; // temp
+            character.Size = 1;
+            character.PvPPoints = 0;
+            character.PKPoints = 0;
+            character.GuildId = 0;
+            character.Bag1TimeLeft = 0;
+            character.Bag2TimeLeft = 0;
+            character.MsgState = 0;
+            character.MotionFlags = 0;
+            character.MovementFlags = 0;
+            character.PlayerFlags = 0;
+
+            CharacterSlot charSlot = new CharacterSlot();
+            charSlot.AccountId = account.Id;
+            charSlot.CharacterId = character.CharacterId;
+            charSlot.SlotId = request.Slot;
+
+            // Add character to database
+            SharpFly_Utility_Library.Database.ClusterDatabase.Queries.Character.Instance.AddCharacter(character);
+            ClusterServer.ClusterDatabase.AddCharacter(character);
+
+            // Add characterslot to database
+            SharpFly_Utility_Library.Database.ClusterDatabase.Queries.CharacterSlot.Instance.AddCharacterSlot(charSlot);
+            ClusterServer.ClusterDatabase.AddCharacterSlot(charSlot);
+
+            // Get all characters from database
+            Dictionary<CharacterSlot, Character> characters = new Dictionary<CharacterSlot, Character>();
+            List<CharacterSlot> slots = ClusterServer.ClusterDatabase.CharacterSlots.Where(slot => slot.AccountId == account.Id).ToList();
+            foreach (CharacterSlot slot in slots)
+                characters.Add(slot, ClusterServer.ClusterDatabase.Characters.Single(chara => chara.Value.CharacterId == slot.CharacterId).Value);
+
+            SendCharacterList(0, characters);
         }
 
         public void OnPing(IncomingPacket packet)
@@ -227,9 +294,9 @@ namespace SharpFly_Cluster.Player
             new ServerIp((string)ClusterServer.Config.GetSetting("ClusterAddress"), this.Socket);
         }
 
-        public void SendCharacterList(uint TimeGetTime)
+        public void SendCharacterList(uint authKey, Dictionary<CharacterSlot, Character> characters)
         {
-            new CharacterList(TimeGetTime, this.Socket);
+            new CharacterList(authKey, characters, this.Socket);
         }
 
         public void SendQueryTickCount(uint time)

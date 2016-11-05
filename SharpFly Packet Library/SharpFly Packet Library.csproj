@@ -131,6 +131,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpFly Utility Library\SharpFly Utility Library.csproj">
+      <Project>{C362C08B-DE5F-4E35-86E2-17CB64CC53F7}</Project>
+      <Name>SharpFly Utility Library</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

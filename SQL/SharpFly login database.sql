@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50516
 File Encoding         : 65001
 
-Date: 2016-10-30 14:38:50
+Date: 2016-11-05 13:33:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `accountname` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `banned` bit(1) NOT NULL,
@@ -38,8 +38,3 @@ CREATE TABLE `clusters` (
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of clusters
--- ----------------------------
-INSERT INTO `clusters` VALUES ('0', 'SharpFly Cluster', '123');
