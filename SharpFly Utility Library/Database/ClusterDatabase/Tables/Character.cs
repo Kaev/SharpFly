@@ -16,7 +16,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
         public uint HairColor { get; set; }
         public uint HeadMesh { get; set; }
         public uint Face { get; set; }
-        public Gender Gender { get; set; }
+        public byte Gender { get; set; }
         public uint Strength { get; set; }
         public uint Stamina { get; set; }
         public uint Dexterity { get; set; }
