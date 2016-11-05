@@ -1,4 +1,5 @@
 ﻿using SharpFly_Utility_Library.Math;
+using System;
 using System.Data;
 
 namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
@@ -7,73 +8,77 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
     {
         public int CharacterId { get; set; }
         public string Name { get; set; }
-        public int ClusterId { get; set; }
-        public int ClassId { get; set; }
-        public int HairStyle { get; set; }
-        public int HairColor { get; set; }
-        public int Face { get; set; }
-        public int Gender { get; set; }
-        public int Strength { get; set; }
-        public int Stamina { get; set; }
-        public int Dexterity { get; set; }
-        public int Intelligence { get; set; }
-        public int SkillPoints { get; set; }
-        public int StatPoints { get; set; }
-        public int Level { get; set; }
-        public int Experience { get; set; }
-        public int Map { get; set; }
-        public Vector4<double> Position { get; set; }
-        public int Penya { get; set; }
-        public int FlyingLevel { get; set; }
-        public int FlyingExp { get; set; }
-        public int HP { get; set; }
-        public int MP { get; set; }
-        public int Size { get; set; }
+        public uint ClusterId { get; set; }
+        public uint ClassId { get; set; }
+        public uint Skinset { get; set; }
+        public uint HairStyle { get; set; }
+        public uint HairColor { get; set; }
+        public uint Face { get; set; }
+        public byte Gender { get; set; }
+        public uint Strength { get; set; }
+        public uint Stamina { get; set; }
+        public uint Dexterity { get; set; }
+        public uint Intelligence { get; set; }
+        public uint SkillPoints { get; set; }
+        public uint StatPoints { get; set; }
+        public uint Level { get; set; }
+        public uint Experience { get; set; }
+        public uint Map { get; set; }
+        public Vector4<float> Position { get; set; }
+        public uint Penya { get; set; }
+        public uint FlyingLevel { get; set; }
+        public uint FlyingExp { get; set; }
+        public uint HP { get; set; }
+        public uint MP { get; set; }
+        public uint Size { get; set; }
         public int PvPPoints { get; set; }
         public int PKPoints { get; set; }
-        public int GuildId { get; set; }
-        public int Bag1TimeLeft { get; set; }
-        public int Bag2TimeLeft { get; set; }
-        public int MsgState { get; set; }
-        public int MotionFlags { get; set; }
-        public int MovementFlags { get; set; }
-        public int PlayerFlags { get; set; }
+        public uint GuildId { get; set; }
+        public uint Bag1TimeLeft { get; set; }
+        public uint Bag2TimeLeft { get; set; }
+        public uint MsgState { get; set; }
+        public uint MotionFlags { get; set; }
+        public uint MovementFlags { get; set; }
+        public uint PlayerFlags { get; set; }
+
+        public Character() { }
 
         public Character(DataRow row)
         {
             CharacterId = (int)row["characterId"];
             Name = (string)row["name"];
-            ClusterId = (int)row["clusterId"];
-            ClassId = (int)row["classId"];
-            HairStyle = (int)row["hairStyle"];
-            HairColor = (int)row["hairColor"];
-            Face = (int)row["face"];
-            Gender = (int)row["gender"];
-            Strength = (int)row["strength"];
-            Stamina = (int)row["stamina"];
-            Dexterity = (int)row["dexterity"];
-            Intelligence = (int)row["intelligence"];
-            SkillPoints = (int)row["skillpoints"];
-            StatPoints = (int)row["statpoints"];
-            Level = (int)row["level"];
-            Experience = (int)row["exp"];
-            Map = (int)row["map"];
-            Position = new Vector4<double>((double)row["x"], (double)row["y"], (double)row["z"], (double)row["orientation"]);
-            Penya = (int)row["penya"];
-            FlyingLevel = (int)row["flyingLevel"];
-            FlyingExp = (int)row["flyingExp"];
-            HP = (int)row["hp"];
-            MP = (int)row["mp"];
-            Size = (int)row["size"];
+            ClusterId = Convert.ToUInt32(row["clusterId"]);
+            ClassId = Convert.ToUInt32(row["classId"]);
+            Skinset = Convert.ToUInt32(row["skinset"]);
+            HairStyle = Convert.ToUInt32(row["hairStyle"]);
+            HairColor = Convert.ToUInt32(row["hairColor"]);
+            Face = Convert.ToUInt32(row["face"]);
+            Gender = Convert.ToByte(row["gender"]);
+            Strength = Convert.ToUInt32(row["strength"]);
+            Stamina = Convert.ToUInt32(row["stamina"]);
+            Dexterity = Convert.ToUInt32(row["dexterity"]);
+            Intelligence = Convert.ToUInt32(row["intelligence"]);
+            SkillPoints = Convert.ToUInt32(row["skillpoints"]);
+            StatPoints = Convert.ToUInt32(row["statpoints"]);
+            Level = Convert.ToUInt32(row["level"]);
+            Experience = Convert.ToUInt32(row["exp"]);
+            Map = Convert.ToUInt32(row["map"]);
+            Position = new Vector4<float>(Convert.ToSingle(row["x"]), Convert.ToSingle(row["y"]), Convert.ToSingle(row["z"]), Convert.ToSingle(row["orientation"]));
+            Penya = Convert.ToUInt32(row["penya"]);
+            FlyingLevel = Convert.ToUInt32(row["flyingLevel"]);
+            FlyingExp = Convert.ToUInt32(row["flyingExp"]);
+            HP = Convert.ToUInt32(row["hp"]);
+            MP = Convert.ToUInt32(row["mp"]);
+            Size = Convert.ToUInt32(row["size"]);
             PvPPoints = (int)row["pvpPoints"];
             PKPoints = (int)row["pkPoints"];
-            GuildId = (int)row["guildId"];
-            Bag1TimeLeft = (int)row["bag1TimeLeft"];
-            Bag2TimeLeft = (int)row["bag2TimeLeft"];
-            MsgState = (int)row["msgState"];
-            MotionFlags = (int)row["motionFlags"];
-            MovementFlags = (int)row["movementFlags"];
-            PlayerFlags = (int)row["playerFlags"];
+            GuildId = Convert.ToUInt32(row["guildId"]);
+            Bag1TimeLeft = Convert.ToUInt32(row["bag1TimeLeft"]);
+            Bag2TimeLeft = Convert.ToUInt32(row["bag2TimeLeft"]);
+            MsgState = Convert.ToUInt32(row["msgState"]);
+            MotionFlags = Convert.ToUInt32(row["motionFlags"]);
+            MovementFlags = Convert.ToUInt32(row["movementFlags"]);
+            PlayerFlags = Convert.ToUInt32(row["playerFlags"]);
         }
     }
 }

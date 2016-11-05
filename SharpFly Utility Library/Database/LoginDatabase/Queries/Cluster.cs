@@ -26,16 +26,17 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Queries
 
         public void Initialize(Database db)
         {
-            m_Query_GetAllClusters = new PreparedStatement(db, "SELECT * FROM clusters");
-            m_Query_GetSingleCluster = new PreparedStatement(db, "SELECT * FROM clusters WHERE id=@id", new MySqlParameter("@id", MySqlDbType.Int32));
+            m_Query_GetAllClusters = new PreparedStatement(db, "SELECT * FROM `clusters`");
+            m_Query_GetSingleCluster = new PreparedStatement(db, "SELECT * FROM `clusters` WHERE id=@id", new MySqlParameter("@id", MySqlDbType.Int32));
         }
 
         public List<Tables.Cluster> GetAllClusters()
         {
             List<Tables.Cluster> clusterList = new List<Tables.Cluster>();
             DataTable dt = m_Query_GetAllClusters.Process();
-            foreach (DataRow row in dt.Rows)
-                clusterList.Add(new Tables.Cluster(row));
+            if (dt != null)
+                foreach (DataRow row in dt.Rows)
+                    clusterList.Add(new Tables.Cluster(row));
             return clusterList;
         }
 

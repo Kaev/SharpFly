@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace SharpFly_Utility_Library.Database.LoginDatabase.Tables
 {
@@ -10,7 +11,7 @@ namespace SharpFly_Utility_Library.Database.LoginDatabase.Tables
 
         public Cluster(DataRow row)
         {
-            Id = (uint)row["id"];
+            Id = Convert.ToUInt32(row["id"]);
             Name = (string)row["name"];
             Password = (string)row["password"];
         }

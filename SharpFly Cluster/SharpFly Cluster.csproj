@@ -65,8 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Player\Player.cs" />
-    <Compile Include="Player\PlayerManager.cs" />
+    <Compile Include="Player\Client.cs" />
+    <Compile Include="Player\ClientManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\Interserver\RequestSuccesfulEventArgs.cs" />

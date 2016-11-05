@@ -48,6 +48,7 @@
     <Compile Include="Configuration\LoginServerConfig.cs" />
     <Compile Include="Configuration\ClusterServerConfig.cs" />
     <Compile Include="Database\ClusterDatabase\Queries\Character.cs" />
+    <Compile Include="Database\ClusterDatabase\Queries\CharacterSlot.cs" />
     <Compile Include="Database\ClusterDatabase\Tables\Character.cs" />
     <Compile Include="Database\ClusterDatabase\Tables\CharacterActionBar.cs" />
     <Compile Include="Database\ClusterDatabase\Tables\CharacterBank.cs" />
@@ -62,6 +63,10 @@
     <Compile Include="Database\MySQLConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Configuration\IniFile.cs" />
+    <Compile Include="Enums\Gender.cs" />
+    <Compile Include="Enums\Mode.cs" />
+    <Compile Include="Enums\StateMode.cs" />
+    <Compile Include="Enums\StateModeBasemotion.cs" />
     <Compile Include="Math\Vector4.cs" />
     <Compile Include="Ports\PortChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
