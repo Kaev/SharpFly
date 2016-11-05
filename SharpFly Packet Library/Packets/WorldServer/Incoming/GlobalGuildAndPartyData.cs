@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    class GlobalGuildAndPartyData
+    public class GlobalGuildAndPartyData
     {
     }
 }
