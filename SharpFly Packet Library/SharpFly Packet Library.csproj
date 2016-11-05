@@ -86,6 +86,8 @@
     <Compile Include="Packets\ClusterServer\Outgoing\Pong.cs" />
     <Compile Include="Packets\ClusterServer\Outgoing\QueryTickCount.cs" />
     <Compile Include="Packets\ClusterServer\Outgoing\ServerIp.cs" />
+    <Compile Include="Packets\WorldServer\Incoming\JoinWorld.cs" />
+    <Compile Include="Packets\WorldServer\Incoming\MessengerAddFriend.cs" />
     <Compile Include="Packets\WorldServer\Incoming\PartyChangeItemMode.cs" />
     <Compile Include="Packets\WorldServer\Incoming\DestroyPlayer.cs" />
     <Compile Include="Packets\WorldServer\Incoming\OpCodes.cs" />
