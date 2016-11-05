@@ -1,4 +1,5 @@
 ﻿using SharpFly_Utility_Library.Math;
+using SharpFly_Utility_Library.Enums;
 using System;
 using System.Data;
 
@@ -14,7 +15,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
         public uint HairStyle { get; set; }
         public uint HairColor { get; set; }
         public uint Face { get; set; }
-        public byte Gender { get; set; }
+        public Gender Gender { get; set; }
         public uint Strength { get; set; }
         public uint Stamina { get; set; }
         public uint Dexterity { get; set; }
@@ -53,7 +54,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
             HairStyle = Convert.ToUInt32(row["hairStyle"]);
             HairColor = Convert.ToUInt32(row["hairColor"]);
             Face = Convert.ToUInt32(row["face"]);
-            Gender = Convert.ToByte(row["gender"]);
+            Gender = (Gender)Convert.ToByte(row["gender"]);
             Strength = Convert.ToUInt32(row["strength"]);
             Stamina = Convert.ToUInt32(row["stamina"]);
             Dexterity = Convert.ToUInt32(row["dexterity"]);

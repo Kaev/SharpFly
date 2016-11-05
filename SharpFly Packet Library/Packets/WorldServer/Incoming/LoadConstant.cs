@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class GlobalGuildAndPartyData
+    public class LoadConstant
     {
-        //TBA
+        public LoadConstant(IncomingPacket packet)
+        {
+            //No information sent. Only to trigger
+        }
     }
 }

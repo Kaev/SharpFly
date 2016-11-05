@@ -1,14 +1,14 @@
 ﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class GuildAcceptWar
+    public class GuildWarDeclare
     {
         public uint MasterID;
-        public uint AcceptingGuildID;
+        public string GuildName;
 
-        public GuildAcceptWar(IncomingPacket packet)
+        public GuildWarDeclare(IncomingPacket packet)
         {
             MasterID = packet.ReadUInt();
-            AcceptingGuildID = packet.ReadUInt();
+            GuildName = packet.ReadString();
         }
     }
 }

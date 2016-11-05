@@ -1,11 +1,13 @@
 ﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class GuildSurrenderWar
+    public class GuildCombatDisbandParty
     {
+        public uint PartyID;
         public uint PlayerID;
 
-        public GuildSurrenderWar(IncomingPacket packet)
+        public GuildCombatDisbandParty(IncomingPacket packet)
         {
+            PartyID = packet.ReadUInt();
             PlayerID = packet.ReadUInt();
         }
     }

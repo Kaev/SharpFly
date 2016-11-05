@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class MessengerRemoveFriend
+    public class GuildMemberJoinDate
     {
         public uint PlayerID;
-        public uint RemovedFriendID;
+        public string JoinTime;
 
-        public MessengerRemoveFriend(IncomingPacket packet)
+        public GuildMemberJoinDate(IncomingPacket packet)
         {
             PlayerID = packet.ReadUInt();
-            RemovedFriendID = packet.ReadUInt();
+            JoinTime = packet.ReadString();
         }
     }
 }

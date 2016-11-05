@@ -1,11 +1,11 @@
 ﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class MessengerBlockFriend
+    public class MessengerFriendBlock
     {
         public uint PlayerID;
         public uint BlockedPlayerID;
 
-        public MessengerBlockFriend(IncomingPacket packet)
+        public MessengerFriendBlock(IncomingPacket packet)
         {
             PlayerID = packet.ReadUInt();
             BlockedPlayerID = packet.ReadUInt();
