@@ -6,7 +6,8 @@
         public string PartyName;
 
         /// <summary>
-        /// Gets called when party name is being changed.
+        /// Difference PartySendName and PartyChangeName: PartySendName is being used when sending Information to the WorldServer 
+        /// where PartyChangeName is being used when Changing the party name (converting to advanced Party).
         /// </summary>
         public PartyChangeName(IncomingPacket packet)
         {
