@@ -50,11 +50,11 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
             Name = (string)row["name"];
             ClusterId = Convert.ToUInt32(row["clusterId"]);
             ClassId = Convert.ToInt32(row["classId"]);
-            Skinset = Convert.ToByte(row["skinset"]);
-            HairStyle = Convert.ToByte(row["hairStyle"]);
+            Skinset = Convert.ToUInt32(row["skinset"]);
+            HairStyle = Convert.ToUInt32(row["hairStyle"]);
             HairColor = Convert.ToUInt32(row["hairColor"]);
             HeadMesh = Convert.ToUInt32(row["headMesh"]);
-            Face = Convert.ToByte(row["face"]);
+            Face = Convert.ToUInt32(row["face"]);
             Gender = Convert.ToByte(row["gender"]);
             Strength = Convert.ToUInt32(row["strength"]);
             Stamina = Convert.ToUInt32(row["stamina"]);
