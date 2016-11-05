@@ -32,22 +32,23 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
             m_Query_GetAllCharacters = new PreparedStatement(db, "SELECT * FROM `character`");
             m_Query_GetSingleCharacter = new PreparedStatement(db, "SELECT * FROM `character` WHERE characterId=@characterId", new MySqlParameter("@characterId", MySqlDbType.Int32));
             m_Query_GetHighestCharacterId = new PreparedStatement(db, "SELECT MAX(characterId) AS `highestCharId` FROM `character`");
-            m_Query_InsertCharacter = new PreparedStatement(db, "INSERT INTO `character`(name, clusterId, classId, skinset, hairStyle, hairColor, face, gender, strength, stamina, dexterity, intelligence, skillpoints, statpoints, level, exp, map, x, y, z, orientation, penya, flyingLevel, flyingExp, hp, mp, size, pvpPoints, pkPoints, guildId, bag1TimeLeft, bag2Timeleft, msgState, motionFlags, movementFlags, playerFlags) VALUES (@name, @clusterId, @classId, @skinset, @hairStyle, @hairColor, @face, @gender, @strength, @stamina, @dexterity, @intelligence, @skillpoints, @statpoints, @level, @exp, @map, @x, @y, @z, @orientation, @penya, @flyingLevel, @flyingExp, @hp, @mp, @size, @pvpPoints, @pkPoints, @guildId, @bag1TimeLeft, @bag2Timeleft, @msgState, @motionFlags, @movementFlags, @playerFlags)",
+            m_Query_InsertCharacter = new PreparedStatement(db, "INSERT INTO `character`(name, clusterId, classId, skinset, hairStyle, hairColor, headMesh, face, gender, strength, stamina, dexterity, intelligence, skillpoints, statpoints, level, exp, map, x, y, z, orientation, penya, flyingLevel, flyingExp, hp, mp, size, pvpPoints, pkPoints, guildId, bag1TimeLeft, bag2Timeleft, msgState, motionFlags, movementFlags, playerFlags) VALUES (@name, @clusterId, @classId, @skinset, @hairStyle, @hairColor, @headMesh, @face, @gender, @strength, @stamina, @dexterity, @intelligence, @skillpoints, @statpoints, @level, @exp, @map, @x, @y, @z, @orientation, @penya, @flyingLevel, @flyingExp, @hp, @mp, @size, @pvpPoints, @pkPoints, @guildId, @bag1TimeLeft, @bag2Timeleft, @msgState, @motionFlags, @movementFlags, @playerFlags)",
                 new MySqlParameter("@name", MySqlDbType.VarChar),
                 new MySqlParameter("@clusterId", MySqlDbType.UInt32),
-                new MySqlParameter("@classId", MySqlDbType.UInt32),
+                new MySqlParameter("@classId", MySqlDbType.Int32),
                 new MySqlParameter("@skinset", MySqlDbType.UInt32),
                 new MySqlParameter("@hairStyle", MySqlDbType.UInt32),
                 new MySqlParameter("@hairColor", MySqlDbType.UInt32),
+                new MySqlParameter("@headMesh", MySqlDbType.UInt32),
                 new MySqlParameter("@face", MySqlDbType.UInt32),
-                new MySqlParameter("@gender", MySqlDbType.UInt32),
+                new MySqlParameter("@gender", MySqlDbType.Byte),
                 new MySqlParameter("@strength", MySqlDbType.UInt32),
                 new MySqlParameter("@stamina", MySqlDbType.Int32),
                 new MySqlParameter("@dexterity", MySqlDbType.UInt32),
                 new MySqlParameter("@intelligence", MySqlDbType.UInt32),
                 new MySqlParameter("@skillpoints", MySqlDbType.UInt32),
                 new MySqlParameter("@statpoints", MySqlDbType.UInt32),
-                new MySqlParameter("@level", MySqlDbType.UInt32),
+                new MySqlParameter("@level", MySqlDbType.Int32),
                 new MySqlParameter("@exp", MySqlDbType.UInt32),
                 new MySqlParameter("@map", MySqlDbType.UInt32),
                 new MySqlParameter("@x", MySqlDbType.Float),
@@ -74,7 +75,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
 
         public void AddCharacter(Tables.Character character)
         {
-            m_Query_InsertCharacter.Process(character.Name, character.ClusterId, character.ClassId, character.Skinset, character.HairStyle, character.HairColor, character.Face, character.Gender, character.Strength, character.Stamina, character.Dexterity, character.Intelligence, character.SkillPoints, character.StatPoints, character.Level, character.Experience, character.Map, character.Position.X, character.Position.Y, character.Position.Z, character.Position.O, character.Penya, character.FlyingLevel, character.FlyingExp, character.HP, character.MP, character.Size, character.PvPPoints, character.PKPoints, character.GuildId, character.Bag1TimeLeft, character.Bag2TimeLeft, character.MsgState, character.MotionFlags, character.MovementFlags, character.PlayerFlags);
+            m_Query_InsertCharacter.Process(character.Name, character.ClusterId, character.ClassId, character.Skinset, character.HairStyle, character.HairColor, character.HeadMesh, character.Face, character.Gender, character.Strength, character.Stamina, character.Dexterity, character.Intelligence, character.SkillPoints, character.StatPoints, character.Level, character.Experience, character.Map, character.Position.X, character.Position.Y, character.Position.Z, character.Position.O, character.Penya, character.FlyingLevel, character.FlyingExp, character.HP, character.MP, character.Size, character.PvPPoints, character.PKPoints, character.GuildId, character.Bag1TimeLeft, character.Bag2TimeLeft, character.MsgState, character.MotionFlags, character.MovementFlags, character.PlayerFlags);
         }
 
         public List<Tables.Character> GetAllCharacters()
@@ -103,8 +104,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
                 object value = dt.Rows[0]["highestCharId"];
                 if (!Convert.IsDBNull(value))
                     return Convert.ToInt32(value) + 1;
-            }
-                
+            }  
             return 1;
         }
 

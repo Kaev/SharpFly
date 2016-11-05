@@ -9,10 +9,11 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
         public int CharacterId { get; set; }
         public string Name { get; set; }
         public uint ClusterId { get; set; }
-        public uint ClassId { get; set; }
+        public int ClassId { get; set; }
         public uint Skinset { get; set; }
         public uint HairStyle { get; set; }
         public uint HairColor { get; set; }
+        public uint HeadMesh { get; set; }
         public uint Face { get; set; }
         public byte Gender { get; set; }
         public uint Strength { get; set; }
@@ -21,7 +22,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
         public uint Intelligence { get; set; }
         public uint SkillPoints { get; set; }
         public uint StatPoints { get; set; }
-        public uint Level { get; set; }
+        public int Level { get; set; }
         public uint Experience { get; set; }
         public uint Map { get; set; }
         public Vector4<float> Position { get; set; }
@@ -48,11 +49,12 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
             CharacterId = (int)row["characterId"];
             Name = (string)row["name"];
             ClusterId = Convert.ToUInt32(row["clusterId"]);
-            ClassId = Convert.ToUInt32(row["classId"]);
-            Skinset = Convert.ToUInt32(row["skinset"]);
-            HairStyle = Convert.ToUInt32(row["hairStyle"]);
+            ClassId = Convert.ToInt32(row["classId"]);
+            Skinset = Convert.ToByte(row["skinset"]);
+            HairStyle = Convert.ToByte(row["hairStyle"]);
             HairColor = Convert.ToUInt32(row["hairColor"]);
-            Face = Convert.ToUInt32(row["face"]);
+            HeadMesh = Convert.ToUInt32(row["headMesh"]);
+            Face = Convert.ToByte(row["face"]);
             Gender = Convert.ToByte(row["gender"]);
             Strength = Convert.ToUInt32(row["strength"]);
             Stamina = Convert.ToUInt32(row["stamina"]);
@@ -60,7 +62,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Tables
             Intelligence = Convert.ToUInt32(row["intelligence"]);
             SkillPoints = Convert.ToUInt32(row["skillpoints"]);
             StatPoints = Convert.ToUInt32(row["statpoints"]);
-            Level = Convert.ToUInt32(row["level"]);
+            Level = Convert.ToInt32(row["level"]);
             Experience = Convert.ToUInt32(row["exp"]);
             Map = Convert.ToUInt32(row["map"]);
             Position = new Vector4<float>(Convert.ToSingle(row["x"]), Convert.ToSingle(row["y"]), Convert.ToSingle(row["z"]), Convert.ToSingle(row["orientation"]));

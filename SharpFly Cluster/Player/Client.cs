@@ -230,6 +230,7 @@ namespace SharpFly_Cluster.Player
             character.Skinset = request.Skinset;
             character.HairStyle = request.HairStyle;
             character.HairColor = request.HairColor;
+            character.HeadMesh = request.HeadMesh;
             character.Face = request.Face;
             character.Gender = request.Gender;
             character.Strength = 15;

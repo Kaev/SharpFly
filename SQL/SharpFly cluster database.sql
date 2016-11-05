@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50516
 File Encoding         : 65001
 
-Date: 2016-11-05 13:32:55
+Date: 2016-11-05 21:43:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,10 +23,11 @@ CREATE TABLE `character` (
   `characterId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `clusterId` int(10) unsigned NOT NULL,
-  `classId` int(10) unsigned NOT NULL,
+  `classId` int(10) NOT NULL,
   `skinset` int(10) unsigned NOT NULL,
   `hairStyle` int(10) NOT NULL,
   `hairColor` int(10) unsigned NOT NULL,
+  `headMesh` int(10) unsigned NOT NULL,
   `face` int(10) unsigned NOT NULL,
   `gender` int(10) unsigned NOT NULL,
   `strength` int(10) unsigned NOT NULL,
@@ -58,7 +59,7 @@ CREATE TABLE `character` (
   `movementFlags` int(10) unsigned NOT NULL,
   `playerFlags` int(10) unsigned NOT NULL,
   PRIMARY KEY (`characterId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of character

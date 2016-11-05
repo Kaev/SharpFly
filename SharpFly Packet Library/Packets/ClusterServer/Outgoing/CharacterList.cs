@@ -1,4 +1,5 @@
 ﻿using SharpFly_Utility_Library.Database.ClusterDatabase.Tables;
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 
@@ -27,14 +28,14 @@ namespace SharpFly_Packet_Library.Packets.ClusterServer.Outgoing
                     packet.Write(character.Value.Position.X);
                     packet.Write(character.Value.Position.Y);
                     packet.Write(character.Value.Position.Z);
-                    packet.Write(character.Value.CharacterId); // ID Player?
+                    packet.Write(character.Value.CharacterId);
                     packet.Write(0); // ID Party
                     packet.Write(0); // ID Guild
                     packet.Write(0); // ID War
-                    packet.Write(character.Value.Skinset); // Skinset
+                    packet.Write(character.Value.Skinset);
                     packet.Write(character.Value.HairStyle);
                     packet.Write(character.Value.HairColor);
-                    packet.Write(character.Value.Face);
+                    packet.Write(character.Value.HeadMesh);
                     packet.Write(character.Value.Gender);
                     packet.Write(character.Value.ClassId);
                     packet.Write(character.Value.Level);
