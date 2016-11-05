@@ -1,6 +1,6 @@
 ﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class MessengerAddFriend
+    public class MessengerFriendAdd
     {
         public uint PlayerID;
         public uint TargetPlayerID;
@@ -9,7 +9,7 @@
         public int PlayerJob;
         public int TargetPlayerJob;
 
-        public MessengerAddFriend(IncomingPacket packet)
+        public MessengerFriendAdd(IncomingPacket packet)
         {
             PlayerID = packet.ReadUInt();
             TargetPlayerID = packet.ReadUInt();

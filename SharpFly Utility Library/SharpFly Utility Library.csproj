@@ -63,6 +63,7 @@
     <Compile Include="Database\MySQLConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Configuration\IniFile.cs" />
+    <Compile Include="Enums\ChangeGuildRankFlag.cs" />
     <Compile Include="Enums\Gender.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\StateMode.cs" />
