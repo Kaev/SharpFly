@@ -34,7 +34,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase
             }
         }
 
-        public void RemoveCharacter(Character character)
+        public void DeleteCharacter(Character character)
         {
             lock("Characters")
             {
@@ -50,7 +50,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase
             }
         }
 
-        public void RemoveCharacterSlot(CharacterSlot slot)
+        public void DeleteCharacterSlot(CharacterSlot slot)
         {
             lock ("CharacterSlot")
             {

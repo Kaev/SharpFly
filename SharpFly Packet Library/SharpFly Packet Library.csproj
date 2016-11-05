@@ -52,6 +52,7 @@
     <Compile Include="Helper\Cluster.cs" />
     <Compile Include="Packets\ClusterServer\Incoming\AuthQuery.cs" />
     <Compile Include="Packets\ClusterServer\Incoming\CreateCharacter.cs" />
+    <Compile Include="Packets\ClusterServer\Incoming\DeleteCharacter.cs" />
     <Compile Include="Packets\ClusterServer\Outgoing\AuthQuery.cs" />
     <Compile Include="Packets\IncomingInterserverPacket.cs" />
     <Compile Include="Packets\Interserver\Incoming\OpCodes.cs" />

@@ -12,6 +12,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
         private static PreparedStatement m_Query_GetAllCharacterSlotsForAccount;
         private static PreparedStatement m_Query_InsertCharacterSlot;
         private static PreparedStatement m_Query_GetSingleCharacterSlotForAccount;
+        private static PreparedStatement m_Query_DeleteCharacterSlot;
 
         public static CharacterSlot Instance
         {
@@ -32,6 +33,7 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
             m_Query_GetAllCharacterSlotsForAccount = new PreparedStatement(db, "SELECT * FROM `character_slot` WHERE accountid=@accountId", new MySqlParameter("@accountId", MySqlDbType.Int32));
             m_Query_InsertCharacterSlot = new PreparedStatement(db, "INSERT INTO character_slot(characterId, slotId, accountId) VALUES (@characterId, @slotId, @accountId)", new MySqlParameter("@characterId", MySqlDbType.Int32), new MySqlParameter("@slotId", MySqlDbType.Int32), new MySqlParameter("@accountId", MySqlDbType.Int32));
             m_Query_GetSingleCharacterSlotForAccount = new PreparedStatement(db, "SELECT * FROM character_slots WHERE accountid=@accountId AND slotId=@slotId", new MySqlParameter("@accountId", MySqlDbType.Int32), new MySqlParameter("@slotId", MySqlDbType.Int32));
+            m_Query_DeleteCharacterSlot = new PreparedStatement(db, "DELETE FROM `character_slot` WHERE characterId=@characterId AND accountId=@accountId", new MySqlParameter("@characterId", MySqlDbType.Int32), new MySqlParameter("@accountId", MySqlDbType.Int32));
         }
 
         public List<Tables.CharacterSlot> GetAllCharacterSlots()
@@ -65,6 +67,11 @@ namespace SharpFly_Utility_Library.Database.ClusterDatabase.Queries
             if (dt != null && dt.Rows.Count > 0)
                 return new Tables.CharacterSlot(dt.Rows[0]);
             return null;
+        }
+
+        public void DeleteCharacterSlot(Tables.CharacterSlot slot)
+        {
+            m_Query_DeleteCharacterSlot.Process(slot.CharacterId, slot.AccountId);
         }
     }
 }
