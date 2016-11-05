@@ -8,7 +8,7 @@
         public uint PartyID;
         public uint GuildID;
         public uint GuildWarID;
-        public uint IdOfMulti;      //ID of the channel (When using multiple chanels)
+        public uint IdOfMulti;      //ID of the channel (When using multiple chanels)?
         public byte CharacterSlot;
         public string CharacterName;
         public string AccountName;
@@ -35,11 +35,11 @@
             FriendsSize = packet.ReadInt();
             FriendID = packet.ReadUInt();
 
-            for (int i = 0; i < FriendsSize; i++)
+/*  TODO          for (int i = 0; i < FriendsSize; i++)
             {
                 //TODO: packet.Read( &f, sizeof(Friend) );
                 //SetFriend( FriendID, &f)
-            }
+            }*/
         }
     }
 }
