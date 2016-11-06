@@ -4,19 +4,20 @@ using SharpFly_Login.Server;
 using SharpFly_Packet_Library.Helper;
 using NetMQ.Sockets;
 using SharpFly_Packet_Library.Packets.Interserver.Incoming;
-using System.Threading;
 
 namespace SharpFly_Login.Clusters
 {
     public class Cluster : IDisposable
     {
-        #region "Network related attributes"
+        #region Network related attributes
         public PushSocket ClientSocket { get; set; }
         #endregion
 
-        #region "Cluster attributes"
+        #region Cluster attributes
         public SharpFly_Packet_Library.Helper.Cluster ClusterData { get; set; }
         #endregion
+
+        public static uint ChannelId = 20;
 
         private Cluster() { }
 
@@ -49,9 +50,8 @@ namespace SharpFly_Login.Clusters
             RegisterClusterRequest request = new RegisterClusterRequest(packet);
 
             SharpFly_Utility_Library.Database.LoginDatabase.Tables.Cluster clusterTable = SharpFly_Utility_Library.Database.LoginDatabase.Queries.Cluster.Instance.GetCluster(request.ClusterId);
-
             Cluster cluster = new Cluster();
-            cluster.ClientSocket = new PushSocket(String.Format(">tcp://{0}:{1}", LoginServer.Config.GetSetting("LoginAddress"), request.SendPort));
+            cluster.ClientSocket = new PushSocket(String.Format(">tcp://{0}:{1}", request.Ip, request.SendPort));
             cluster.ClusterData = new SharpFly_Packet_Library.Helper.Cluster();
             cluster.ClusterData.Id = request.ClusterId;
             cluster.ClusterData.Name = clusterTable.Name;
@@ -87,7 +87,7 @@ namespace SharpFly_Login.Clusters
 
             if (clusterTable == null || request.AuthorizationPassword != clusterTable.Password)
             {
-                cluster.SendRegisterNewChannelSuccesful(0, false);
+                cluster.SendRegisterNewChannelSuccesful(0, request.TempChannelId, false);
                 Console.WriteLine("Couldn't register new channel to cluster {1}", cluster.ClusterData.Name);
                 return;
             }
@@ -96,17 +96,16 @@ namespace SharpFly_Login.Clusters
             {
                 Channel channel = new Channel();
                 channel.Parent = cluster.ClusterData;
-                channel.Id = ClusterManager.Id++;
+                channel.Id = ChannelId++;
                 channel.Name = request.Name;
-                channel.PlayerCount = request.PlayerCount;
+                channel.PlayerCount = 0;
                 channel.MaxPlayerCount = request.MaxPlayerCount;
                 cluster.ClusterData.Channels.Add(channel);
 
-                cluster.SendRegisterNewChannelSuccesful(channel.Id, true);
+                cluster.SendRegisterNewChannelSuccesful(channel.Id, request.TempChannelId, true);
                 Console.WriteLine("Registered channel {0} on cluster {1}", channel.Name, cluster.ClusterData.Name);
                 return;
             }
-
             Console.WriteLine("Couldn't register new channel to cluster {1}", cluster.ClusterData.Name);
         }
         #endregion
@@ -116,9 +115,9 @@ namespace SharpFly_Login.Clusters
             new SharpFly_Packet_Library.Packets.Interserver.Outgoing.RegisterClusterSuccesful(clusterId, succesful, this.ClientSocket);
         }
 
-        public void SendRegisterNewChannelSuccesful(uint channelId, bool succesful)
+        public void SendRegisterNewChannelSuccesful(uint channelId, uint tempChannelId, bool succesful)
         {
-            new SharpFly_Packet_Library.Packets.Interserver.Outgoing.RegisterNewChannelSuccesful(channelId, succesful, this.ClientSocket);
+            new SharpFly_Packet_Library.Packets.Interserver.Outgoing.RegisterNewChannelSuccesful(channelId, tempChannelId, succesful, this.ClientSocket);
         }
         #endregion
     }

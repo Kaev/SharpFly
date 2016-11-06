@@ -124,7 +124,7 @@ namespace SharpFly_Cluster.Player
 
         public void Dispose()
         {
-            ClusterServer.PlayerManager.RemovePlayer(this);
+            ClusterServer.ClientManager.RemovePlayer(this);
             this.Socket.Dispose();
         }
 
@@ -297,7 +297,7 @@ namespace SharpFly_Cluster.Player
 
         public void SendServerIp()
         {
-            new ServerIp((string)ClusterServer.Config.GetSetting("ClusterAddress"), this.Socket);
+            new ServerIp((string)ClusterServer.Config.GetSetting("Address"), this.Socket);
         }
 
         public void SendCharacterList(uint authKey)

@@ -13,12 +13,12 @@ namespace SharpFly_Cluster.Server.Interserver
         public event RequestSuccesfulHandler OnNewChannelRequestSuccesful;
 
         public PublisherSocket PublisherSocket { get; private set; }
-        public PullSocket ServerSocket { get; set; }
+        public PullSocket ServerSocket { get; private set; }
 
-        public LoginConnector(string publisherPort, string receivePort)
+        public LoginConnector(string loginPort, string clusterStartPort)
         {
-            PublisherSocket = new PublisherSocket(String.Format(">tcp://{0}:{1}", ClusterServer.Config.GetSetting("ClusterAddress"), publisherPort));
-            ServerSocket = new PullSocket(String.Format("@tcp://{0}:{1}", ClusterServer.Config.GetSetting("ClusterAddress"), receivePort));
+            PublisherSocket = new PublisherSocket(String.Format(">tcp://{0}:{1}", ClusterServer.Config.GetSetting("LoginAddress"), loginPort));
+            ServerSocket = new PullSocket(String.Format("@tcp://{0}:{1}", ClusterServer.Config.GetSetting("Address"), clusterStartPort));
         }
 
         public void Dispose()
@@ -72,7 +72,7 @@ namespace SharpFly_Cluster.Server.Interserver
         private void RegisterNewChannelSuccesful(IncomingInterserverPacket packet)
         {
             RegisterNewChannelSuccesful request = new RegisterNewChannelSuccesful(packet);
-            RequestSuccesfulEventArgs args = new RequestSuccesfulEventArgs(request.Succesful, request.ChannelId);
+            RequestSuccesfulEventArgs args = new RequestSuccesfulEventArgs(request.Succesful, request.ChannelId, request.TempChannelId);
             OnNewChannelRequestSuccesful(args);
         }
     }

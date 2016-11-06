@@ -12,7 +12,7 @@ namespace SharpFly_Packet_Library.Security
         private static ICryptoTransform encryptor { get; set; }
         private static RijndaelManaged rijndael { get; set; }
 
-        public static void Initiate()
+        public static void Initialize()
         {
             byte[] decryptKey = Encoding.ASCII.GetBytes("dldhsvmflvm").Concat(Enumerable.Repeat((byte)0, 5).ToArray()).ToArray();
             byte[] decryptIV = Enumerable.Repeat((byte)0, 16).ToArray();

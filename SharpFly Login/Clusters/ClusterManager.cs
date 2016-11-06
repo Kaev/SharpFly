@@ -9,8 +9,6 @@ namespace SharpFly_Login.Clusters
         private List<Cluster> m_Clusters;
         private object m_ListLock;
 
-        public static uint Id = 0;
-
         public ClusterManager()
         {
             m_Clusters = new List<Cluster>();
@@ -27,10 +25,6 @@ namespace SharpFly_Login.Clusters
             lock (m_ListLock)
             {
                 m_Clusters.Add(cluster);
-
-                // Just to be sure the ID between channels and clusters is unique.. will probably change that later
-                if (cluster.ClusterData.Id >= Id)
-                    Id += cluster.ClusterData.Id * 100 + 1;
             }
         }
 

@@ -56,11 +56,15 @@
     <Compile Include="Packets\ClusterServer\Outgoing\AuthQuery.cs" />
     <Compile Include="Packets\IncomingInterserverPacket.cs" />
     <Compile Include="Packets\Interserver\Incoming\OpCodes.cs" />
+    <Compile Include="Packets\Interserver\Incoming\RegisterChannelRequest.cs" />
+    <Compile Include="Packets\Interserver\Incoming\RegisterChannelRequestSuccesful.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterClusterRequest.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterClusterSuccesful.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterNewChannelRequest.cs" />
     <Compile Include="Packets\Interserver\Incoming\RegisterNewChannelSuccesful.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\RegisterChannelRequest.cs" />
     <Compile Include="Packets\Interserver\Outgoing\OpCodes.cs" />
+    <Compile Include="Packets\Interserver\Outgoing\RegisterChannelRequestSuccesful.cs" />
     <Compile Include="Packets\Interserver\Outgoing\RegisterClusterRequest.cs" />
     <Compile Include="Packets\Interserver\Outgoing\RegisterClusterSuccesful.cs" />
     <Compile Include="Packets\Interserver\Outgoing\RegisterNewChannelRequest.cs" />
