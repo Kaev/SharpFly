@@ -1,9 +1,9 @@
-﻿namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
+﻿namespace SharpFly_Packet_Library.Packets.WorldServer
 {
     public static class OpCodes
     {
         public const uint GLOBAL_GUILDANDPARTYDATA = 0xFFFFFF38;
-        public const uint GLOBAL_LUA_EVENT_NOTICE = 0xF000F120;
+
         //Connection
         public const uint QUERYTICK = 0x1;
         public const uint ADDCONNECTION = 0xB;
@@ -15,7 +15,7 @@
         //Party
         public const uint PARTY_MEMBER_INVITE = 0xFFFFFF11;
         public const uint PARTY_MEMBER_UNINVITE = 0xFFFFFF12;
-        public const uint PARTY_CHANGE_MODE = 0xFFFFFF19;
+        public const uint PARTY_CHANGE_MODE = 0xFFFFFF19; 
         public const uint PARTY_CHANGE_ITEMMODE = 0xFFFFFF20;
         public const uint PARTY_CHANGE_EXPMODE = 0xFFFFFF21;
         public const uint PARTY_CHANGE_NAME = 0xFFFFFF1A;
@@ -36,7 +36,6 @@
         public const uint GUILD_SET_RANK = 0xF000B026;
         public const uint GUILD_PENYASALARY = 0xF000B027;
         public const uint GUILD_SET_NAME = 0xF000B032;
-        public const uint GUILD_SET_NAME_QURY = 0x10;
         public const uint GUILD_DESTROY = 0xFFFFFF32;
         public const uint GUILD_MEMBER_INVITE = 0xFFFFFF33;
         public const uint GUILD_MEMBER_UNINVITE = 0xFFFFFF34;
@@ -82,6 +81,7 @@
         public const uint MESSAGE_PARTY = 0xFFFFFF59;
         public const uint MESSAGE_GUILD = 0xFFFFFF39;
         public const uint MESSAGE_QUIZ = 0xFF000002;
+        public const uint MESSAGE_LUA_EVENT_NOTICE = 0xF000F120;
         //Music
         public const uint PLAY_MUSIC = 0xFF00E2;
         public const uint PLAY_SOUND = 0xFF00E3;

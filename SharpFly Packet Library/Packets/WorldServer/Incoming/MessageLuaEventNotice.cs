@@ -2,12 +2,12 @@
 
 namespace SharpFly_Packet_Library.Packets.WorldServer.Incoming
 {
-    public class GlobalLuaEventNotice
+    public class MessageLuaEventNotice
     {
         public int Size;
         public List<string> Message; 
 
-        public GlobalLuaEventNotice(IncomingPacket packet)
+        public MessageLuaEventNotice(IncomingPacket packet)
         {
             Size = packet.ReadInt();
 

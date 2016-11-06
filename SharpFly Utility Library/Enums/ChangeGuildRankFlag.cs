@@ -1,6 +1,6 @@
 ﻿namespace SharpFly_Utility_Library.Enums
 {
-    public enum Flags : uint
+    public enum ChangeGuildRankFlag : uint
     {
         DOWN,
         UP
