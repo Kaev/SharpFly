@@ -16,7 +16,7 @@ namespace SharpFly_World.Server.Interserver
 
         public ClusterConnector(string clusterPort, string worldStartPort)
         {
-            PublisherSocket = new PublisherSocket(String.Format(">tcp://{0}:{1}", WorldServer.Config.GetSetting("Address"), clusterPort));
+            PublisherSocket = new PublisherSocket(String.Format(">tcp://{0}:{1}", WorldServer.Config.GetSetting("ClusterAddress"), clusterPort));
             ServerSocket = new PullSocket(String.Format("@tcp://{0}:{1}", WorldServer.Config.GetSetting("Address"), worldStartPort));
         }
 

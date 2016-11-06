@@ -13,7 +13,6 @@
             base.Read("Md5Salt", "Md5Salt", "Security", typeof(string));
             base.Read("Address", "Address", "Login", typeof(string));
             base.Read("LoginPort", "LoginPort", "Login", typeof(int));
-            base.Read("ClusterAddress", "ClusterAddress", "Login", typeof(string));
         }
     }
 }
