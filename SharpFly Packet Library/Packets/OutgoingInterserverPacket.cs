@@ -74,9 +74,9 @@ namespace SharpFly_Packet_Library.Packets
             m_Writer.Write(values);
         }
 
-        public void Send(PublisherSocket socket)
+        public void Send(PublisherSocket socket, string topic)
         {
-            socket.SendMoreFrame("SharpFlyLogin").SendFrame(Buffer);
+            socket.SendMoreFrame(topic).SendFrame(Buffer);
         }
 
         public void Send(PushSocket socket)

@@ -38,7 +38,7 @@ namespace SharpFly_Login.Server
             LoginDatabase = new LoginDatabase(Config);
             if (LoginDatabase.Connection.CheckConnection())
             {
-                Rijndael.Initiate();
+                Rijndael.Initialize();
 
                 this.m_ClusterConnector = new ClusterConnector(loginPort.ToString());
                 this.m_ClusterConnector.StartListening();

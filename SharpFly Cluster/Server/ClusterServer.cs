@@ -1,5 +1,4 @@
-﻿using SharpFly_Packet_Library.Security;
-using SharpFly_Utility_Library.Configuration;
+﻿using SharpFly_Utility_Library.Configuration;
 using SharpFly_Utility_Library.Database.LoginDatabase;
 using SharpFly_Utility_Library.Database.ClusterDatabase;
 using SharpFly_Cluster.Player;
@@ -10,6 +9,7 @@ using System.Threading;
 using SharpFly_Cluster.Server.Interserver;
 using SharpFly_Packet_Library.Packets.Interserver.Outgoing;
 using SharpFly_Utility_Library.Ports;
+using SharpFly_Cluster.Channel;
 
 namespace SharpFly_Cluster.Server
 {
@@ -18,10 +18,14 @@ namespace SharpFly_Cluster.Server
         private Socket m_PlayerSocket { get; set; }
 
         public static LoginConnector LoginConnector;
+        public static WorldConnector WorldConnector;
         public static Config Config { get; private set; }
         public static LoginDatabase LoginDatabase;
-        public static ClientManager PlayerManager;
         public static ClusterDatabase ClusterDatabase;
+        public static ClientManager ClientManager;
+        public static ChannelManager ChannelManager;
+
+        public static uint ClusterId;
 
         public ClusterServer()
         {
@@ -32,18 +36,16 @@ namespace SharpFly_Cluster.Server
                 return;
             }
 
-            Rijndael.Initiate();
-
             Config = new ClusterServerConfig("Resources/Config/Cluster.ini");
 
             int loginPort = (int)Config.GetSetting("LoginPort");
+            int clusterStartPort = (int)Config.GetSetting("ClusterStartPort");
 
-            int receivePort = (int)Config.GetSetting("InterserverPort");
-            Console.WriteLine("Search open port for interserver connection...");
-            while (PortChecker.IsPortAvailable(receivePort))
+            Console.WriteLine("Searching open port for login server communication...");
+            while (PortChecker.IsPortAvailable(clusterStartPort))
             {
-                Console.WriteLine("Port {0} not available, let's try another port", receivePort.ToString());
-                receivePort += 1;
+                Console.WriteLine("Port {0} not available, let's try another port", clusterStartPort.ToString());
+                clusterStartPort += 1;
             }
 
             LoginDatabase = new LoginDatabase(Config);
@@ -52,12 +54,12 @@ namespace SharpFly_Cluster.Server
             {
                 Console.WriteLine("Connecting to login server...");
 
-                LoginConnector = new LoginConnector(loginPort.ToString(), receivePort.ToString());
+                LoginConnector = new LoginConnector(loginPort.ToString(), clusterStartPort.ToString());
                 LoginConnector.StartListening();
 
                 // Let's wait a bit to let the subscriber and publisher socket to connect
                 Thread.Sleep(500);
-                RegisterClusterRequest request = new RegisterClusterRequest((uint)Config.GetSetting("ClusterId"), (string)Config.GetSetting("ClusterAuthorizationPassword"), (string)Config.GetSetting("ClusterAddress"), receivePort.ToString(), LoginConnector.PublisherSocket);
+                RegisterClusterRequest request = new RegisterClusterRequest((uint)Config.GetSetting("ClusterId"), (string)Config.GetSetting("ClusterAuthorizationPassword"), (string)Config.GetSetting("Address"), clusterStartPort.ToString(), LoginConnector.PublisherSocket);
 
                 LoginConnector.OnClusterRequestSuccesful += new LoginConnector.RequestSuccesfulHandler(OnRegisterClusterRequestSuccesful);
             }
@@ -65,8 +67,10 @@ namespace SharpFly_Cluster.Server
 
         public void Dispose()
         {
-            if (PlayerManager != null)
-                PlayerManager.Dispose();
+            if (ClientManager != null)
+                ClientManager.Dispose();
+            if (ChannelManager != null)
+                ChannelManager.Dispose();
             if (LoginConnector != null)
                 LoginConnector.Dispose();
             if (this.m_PlayerSocket != null)
@@ -76,22 +80,25 @@ namespace SharpFly_Cluster.Server
         public void OnRegisterClusterRequestSuccesful(RequestSuccesfulEventArgs args)
         {
             LoginConnector.OnClusterRequestSuccesful -= OnRegisterClusterRequestSuccesful;
-
             if (args.Accepted)
             {
-                RegisterNewChannelRequest newChannelRequest = new RegisterNewChannelRequest(args.Id, (string)Config.GetSetting("ClusterAuthorizationPassword"), "SharpFly Channel", 0, 50, LoginConnector.PublisherSocket);
+                ClusterId = args.Id;
+
                 LoginConnector.OnNewChannelRequestSuccesful += new LoginConnector.RequestSuccesfulHandler(OnRegisterNewChannelSuccesful);
 
                 this.m_PlayerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 this.m_PlayerSocket.Bind(new IPEndPoint(IPAddress.Any, 28000));
                 this.m_PlayerSocket.Listen(100);
 
-                PlayerManager = new ClientManager();
+                ClientManager = new ClientManager();
+                ChannelManager = new ChannelManager();
+                WorldConnector = new WorldConnector(((int)Config.GetSetting("ClusterPort")).ToString());
+                WorldConnector.StartListening();
 
-                Thread acceptPlayerThread = new Thread(() => PlayerManager.AcceptPlayers(this.m_PlayerSocket));
+                Thread acceptPlayerThread = new Thread(() => ClientManager.AcceptPlayers(this.m_PlayerSocket));
                 acceptPlayerThread.Start();
 
-                Thread processPlayerThread = new Thread(() => PlayerManager.ProcessPlayers());
+                Thread processPlayerThread = new Thread(() => ClientManager.ProcessPlayers());
                 processPlayerThread.Start();
 
                 Console.WriteLine("Cluster request succesful!");
@@ -102,10 +109,30 @@ namespace SharpFly_Cluster.Server
 
         public void OnRegisterNewChannelSuccesful(RequestSuccesfulEventArgs args)
         {
+            Channel.Channel channel = ChannelManager.GetChannelById(args.TempId);
+
             if (args.Accepted)
             {
+
+                if (channel == null)
+                {
+                    channel.SendRegisterChannelRequestSuccesful(false, args.Id);
+                    Console.WriteLine("New channel request wasn't succesful!");
+                    return;
+                }
+
+                SharpFly_Packet_Library.Helper.Cluster cluster = new SharpFly_Packet_Library.Helper.Cluster();
+                cluster.Id = ClusterId;
+                channel.ChannelData.Parent = cluster;
+                channel.ChannelData.Id = args.Id;
+
+                channel.SendRegisterChannelRequestSuccesful(args.Accepted, args.Id);
                 Console.WriteLine("New channel request succesful!");
+                return;
             }
+
+            channel.SendRegisterChannelRequestSuccesful(false, args.Id);
+            Console.WriteLine("New channel request wasn't succesful!");
         }
     }
 }

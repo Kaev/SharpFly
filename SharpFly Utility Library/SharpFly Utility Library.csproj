@@ -47,6 +47,7 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\LoginServerConfig.cs" />
     <Compile Include="Configuration\ClusterServerConfig.cs" />
+    <Compile Include="Configuration\WorldServerConfig.cs" />
     <Compile Include="Database\ClusterDatabase\Queries\Character.cs" />
     <Compile Include="Database\ClusterDatabase\Queries\CharacterSlot.cs" />
     <Compile Include="Database\ClusterDatabase\Tables\Character.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Database\MySQLConnector.cs" />
     <Compile Include="Database\PreparedStatement.cs" />
     <Compile Include="Configuration\IniFile.cs" />
+    <Compile Include="Database\WorldDatabase\WorldDatabase.cs" />
     <Compile Include="Enums\ChangeGuildRankFlag.cs" />
     <Compile Include="Enums\Gender.cs" />
     <Compile Include="Enums\Mode.cs" />
@@ -78,7 +80,10 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Database\WorldDatabase\Queries\" />
+    <Folder Include="Database\WorldDatabase\Tables\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

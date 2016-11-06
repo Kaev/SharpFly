@@ -1,20 +1,19 @@
 ﻿using NetMQ;
 using NetMQ.Sockets;
-using SharpFly_Login.Clusters;
 using SharpFly_Packet_Library.Packets;
 using System;
 using System.Collections;
 
-namespace SharpFly_Login.Server.Interserver
+namespace SharpFly_Cluster.Server.Interserver
 {
-    class ClusterConnector : IDisposable
+    public class WorldConnector : IDisposable
     {
         SubscriberSocket _SubscriberSocket { get; set; }
 
-        public ClusterConnector(string clusterRegisterPort)
+        public WorldConnector(string worldRegisterPort)
         {
-            _SubscriberSocket = new SubscriberSocket(String.Format("@tcp://{0}:{1}", LoginServer.Config.GetSetting("Address"), clusterRegisterPort));
-            _SubscriberSocket.Subscribe("SharpFlyLogin");
+            _SubscriberSocket = new SubscriberSocket(String.Format("@tcp://{0}:{1}", ClusterServer.Config.GetSetting("Address"), worldRegisterPort));
+            _SubscriberSocket.Subscribe("SharpFlyCluster");
         }
 
         public void Dispose()
@@ -32,10 +31,10 @@ namespace SharpFly_Login.Server.Interserver
                 while (a.Socket.TryReceiveFrameBytes(out msg))
                 {
                     // Ignore the publisher-subscriber message before the real packet
-                    if (StructuralComparisons.StructuralEqualityComparer.Equals(msg, System.Text.Encoding.UTF8.GetBytes("SharpFlyLogin")))
+                    if (StructuralComparisons.StructuralEqualityComparer.Equals(msg, System.Text.Encoding.UTF8.GetBytes("SharpFlyCluster")))
                         return;
                     IncomingInterserverPacket packet = new IncomingInterserverPacket(msg);
-                    Cluster.ProcessData(packet);
+                    Channel.Channel.ProcessData(packet);
                 }
             };
 

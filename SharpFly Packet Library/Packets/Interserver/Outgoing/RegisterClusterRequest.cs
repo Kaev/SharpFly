@@ -11,7 +11,7 @@ namespace SharpFly_Packet_Library.Packets.Interserver.Outgoing
             packet.Write(authorizationPassword);
             packet.Write(ip);
             packet.Write(sendPort);
-            packet.Send(socket);
+            packet.Send(socket, "SharpFlyLogin");
         }
     }
 }
